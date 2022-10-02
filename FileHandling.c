@@ -1,5 +1,13 @@
-// I will use this step later to create functions for file handling
 #include <stdio.h>
+
+// I will use this step later to create functions for file handling
+
+/*
+REMEMBER: Our algorithm must operate on the bit level.
+
+fgetc() is used to obtain input from a file single character at a time.
+This function returns the ASCII code of the character read by the function.
+*/
 
 int main()
 {
@@ -16,7 +24,12 @@ int main()
         return 0;
     }
 
-    FILE *myOut = fopen("Answer.txt", "w");
+    //Let the user name the output file
+    char outputFileName[256]; // Maximum number of bytes for a filename
+    printf("Enter the name of the output file: \n");
+    scanf("%s", outputFileName);
+    FILE *myOut = fopen(outputFileName, "w");
+
     do
     {
         // Taking input single character at a time
@@ -26,7 +39,7 @@ int main()
         if (feof(fp))
             break;
 
-        fprintf(myOut, "%d ", fgetc(fp));
+        fprintf(myOut, "%d ", fgetc(fp)); //debugging step
     } while (1);
 
     // Close files
