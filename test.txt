@@ -1,0 +1,1 @@
+fgetc() reads characters pointed by the function pointer at that time. On each successful read, it returns the character (ASCII value) read from the stream and advances the read position to the next character. This function returns a constant EOF (-1) when there is no content to read or an unsuccessful read.
