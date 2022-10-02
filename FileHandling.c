@@ -1,3 +1,4 @@
+// I will use this step later to create functions for file handling
 #include <stdio.h>
 
 int main()
@@ -27,15 +28,6 @@ int main()
 
         fprintf(myOut, "%d ", fgetc(fp));
     } while (1);
-
-    // FILE *myOut = fopen("Answer.txt", "w");
-    // while (1)
-    // {
-
-    //     if (feof(fp))
-    //         break;
-    //     fprintf(myOut, "%d ", fgetc(fp));
-    // }
 
     // Close files
     fclose(myOut);
