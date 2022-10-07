@@ -1,3 +1,8 @@
+/*
+    This file is just for trial and error.
+    Feel free to experiment here.
+*/ 
+
 #include <iostream>
 #include <bits/stdc++.h>
 

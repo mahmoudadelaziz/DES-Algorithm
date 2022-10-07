@@ -1,3 +1,11 @@
+/*
+    -- WORK IN PROGRESS! --
+    This is the main code file.
+    All functions implemented in other code files
+    must be integrated into this file in the end
+    before we deliver the final executable.
+*/
+
 #include <iostream>
 #include <bits/stdc++.h>
 
