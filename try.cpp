@@ -25,7 +25,7 @@ int main()
 
     bitset <16> x01 (x0.to_string() + x1.to_string());
     cout << "The two characters put together in 16 bits: " << (x01) << endl;
-    x01[0] = 1; //bit altering (0 index is the LSB (rightmost))
+    x01[0] = 0; //bit altering (0 index is the LSB (rightmost))
     cout << "The two characters put together in 16 bits (altered 1st bit): " << (x01) << endl; 
 
     // Making 64-bit blocks of data from the string
@@ -36,14 +36,18 @@ int main()
 
     for(int i = 0; i < 8; i++)
     {
-        bitset <8> ch (myPlainText[i]);
-        binaryBlock += ch.to_string();
+        //bitset <8> ch (myPlainText[i]);
+        //binaryBlock += ch.to_string();
+
+        myBlock[i] = 5;
+        
     }
 
-    bitset <64> ourBlock (binaryBlock);
-    cout << "Populated block (as string): " << binaryBlock << endl;
-    cout << "Populated block (as bitset): " << ourBlock << endl;
-    cout << "Populated block (Inverted): " << ~ourBlock << endl;
+    //bitset <64> ourBlock (binaryBlock);
+    //cout << "Populated block (as string): " << binaryBlock << endl;
+    cout << "Populating the empty bitset: " << myBlock << endl;
+    //cout << "Populated block (as bitset): " << ourBlock << endl;
+    //cout << "Populated block (Inverted):  " << ~ourBlock << endl;
 
     // Let's try this: create
 
