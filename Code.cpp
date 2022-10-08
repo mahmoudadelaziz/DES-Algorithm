@@ -98,20 +98,6 @@ bitset<64> data_to_blocks(string ourPlainText)
     return dataBlock;
 }
 
-// bitset<32> leftSide(bitset<64> ourData)
-// {
-//     // Returns the left side of our input plaintext data block
-//     bitset<32> leftSide_data(ourData.to_string().substr(0, 32));
-//     return leftSide_data;
-// }
-
-// bitset<32> rightSide(bitset<64> ourData)
-// {
-//     // Returns the right side of our input plaintext data block
-//     bitset<32> rightSide_data(ourData.to_string().substr(32, 32));
-//     return rightSide_data;
-// }
-
 bitset<32> L0(bitset<64> Data_after_IP)
 {
     /*
