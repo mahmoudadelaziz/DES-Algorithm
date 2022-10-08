@@ -84,12 +84,22 @@ int main()
 
     // Performing IP
     bitset<64> data_after_IP(0);
+    bitset<32> L0 (0);
+    bitset<32> R0 (0);
 
     for (int i = 1; i < 65; i++)
-        data_after_IP[64-i] = dataBlock[64 - IP_Table[i-1]];
+    {
+        data_after_IP[64 - i] = dataBlock[64 - IP_Table[i - 1]];
+        L0[32-i] = dataBlock[32 - IP_Table[i - 1]];
+        R0[32-i] = dataBlock[64 - IP_Table[32 + i - 1]];
+    }
 
+    // Working through the example
     bitset<64> ex_after_IP("1100110000000000110011001111111111110000101010101111000010101010");
     cout << "The message  (after IP): " << data_after_IP << endl;
     cout << "It should be (after IP): " << ex_after_IP << endl;
     cout << "Am I right?              " << ~((~data_after_IP) & ex_after_IP) << endl;
+
+    cout << "L0: " << L0 << endl;
+    cout << "R0: " << R0 << endl;
 }
