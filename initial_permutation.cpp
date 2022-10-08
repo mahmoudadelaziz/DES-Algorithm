@@ -89,7 +89,7 @@ int main()
 
     for (int i = 1; i < 65; i++)
     {
-        data_after_IP[64 - i] = dataBlock[64 - IP_Table[i - 1]];
+        data_after_IP[64 - i] = dataBlock[64 - IP_Table[i - 1]]; //Redundant?
         L0[32-i] = dataBlock[32 - IP_Table[i - 1]];
         R0[32-i] = dataBlock[64 - IP_Table[32 + i - 1]];
     }
