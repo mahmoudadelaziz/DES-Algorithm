@@ -20,7 +20,7 @@ int keyPermutationChoice_1_Table[56] =
      14, 6, 61, 53, 45, 37, 29,
      21, 13, 5, 28, 20, 12, 4};
 
-bitset<28> C0(bitset<64> fullKey)
+bitset<28> Key_PC1_Left(bitset<64> fullKey)
 {
     /*
     Takes the 64-bit data block,
@@ -32,7 +32,7 @@ bitset<28> C0(bitset<64> fullKey)
     return L0;
 }
 
-bitset<28> D0(bitset<64> fullKey)
+bitset<28> Key_PC1_Right(bitset<64> fullKey)
 {
     /*
     Takes the 64-bit data block,
@@ -47,7 +47,7 @@ bitset<28> D0(bitset<64> fullKey)
 int main()
 {
     bitset <64> fullKey (0x133457799BBCDFF1);
-    cout << "C0:    " << C0(fullKey) << endl;
-    cout << "D0:    " << D0(fullKey) << endl;
+    cout << "C0:    " << Key_PC1_Left(fullKey) << endl;
+    cout << "D0:    " << Key_PC1_Right(fullKey) << endl;
     return 0;
 }

@@ -4,6 +4,9 @@
     All functions implemented in other code files
     must be integrated into this file in the end
     before we deliver the final executable.
+    
+    >> Walking through the example at:
+    https://captanu.wordpress.com/2015/04/05/des/
 */
 
 #include <iostream>
@@ -15,71 +18,15 @@ using namespace std;
 // Indices for the Initial Permuation
 int IP_Table[64] =
     {
-        58,
-        50,
-        42,
-        34,
-        26,
-        18,
-        10,
-        2,
-        60,
-        52,
-        44,
-        36,
-        28,
-        20,
-        12,
-        4,
-        62,
-        54,
-        46,
-        38,
-        30,
-        22,
-        14,
-        6,
-        64,
-        56,
-        48,
-        40,
-        32,
-        24,
-        16,
-        8,
-        57,
-        49,
-        41,
-        33,
-        25,
-        17,
-        9,
-        1,
-        59,
-        51,
-        43,
-        35,
-        27,
-        19,
-        11,
-        3,
-        61,
-        53,
-        45,
-        37,
-        29,
-        21,
-        13,
-        5,
-        63,
-        55,
-        47,
-        39,
-        31,
-        23,
-        15,
-        7,
-};
+        58,    50,   42,    34,    26,   18,    10,    2,
+        60,    52,   44,    36,    28,   20,    12,    4,
+        62,    54,   46,    38,    30,   22,    14,    6,
+        64,    56,   48,    40,    32,   24,    16,    8,
+        57,    49,   41,    33,    25,   17,     9,    1,
+        59,    51,   43,    35,    27,   19,    11,    3,
+        61,    53,   45,    37,    29,   21,    13,    5,
+        63,    55,   47,    39,    31,   23,    15,    7,
+    };
 
 // Indices for Permutation Choice 1 for the Key
 int keyPermutationChoice_1_Table[56] =
@@ -133,11 +80,11 @@ bitset<32> R0(bitset<64> Data_after_IP)
     return R0;
 }
 
-bitset<28> C0(bitset<64> fullKey)
+bitset<28> Key_PC1_Left(bitset<64> fullKey)
 {
     /*
-    Takes the 64-bit data block,
-    and returns the left side after performing Initial Permutation.
+    Takes the 64-bit key block,
+    and returns the left side after performing Permutation Choice 1 (C0).
     */
     bitset<28> L0(0);
     for (int i = 1; i < 57; i++)
@@ -145,11 +92,11 @@ bitset<28> C0(bitset<64> fullKey)
     return L0;
 }
 
-bitset<28> D0(bitset<64> fullKey)
+bitset<28> Key_PC1_Right(bitset<64> fullKey)
 {
     /*
-    Takes the 64-bit data block,
-    and returns the right side after performing Initial Permutation.
+    Takes the 64-bit key block,
+    and returns the right side after performing Permutation Choice 1 (D0).
     */
     bitset<28> R0(0);
     for (int i = 1; i < 57; i++)
@@ -159,14 +106,14 @@ bitset<28> D0(bitset<64> fullKey)
 
 int main()
 {
-
+    // Driver code
     bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
     cout << "L0 (after IP):   " << L0(example_message) << endl;
     cout << "R0 (after IP):   " << R0(example_message) << endl;
 
     bitset<64> example_key(0x133457799BBCDFF1);
-    cout << "Message in bits: " << example_key << endl;
-    cout << "C0 (after PC1):   " << C0(example_key) << endl;
-    cout << "D0 (after PC1):   " << D0(example_key) << endl;
+    cout << "Key in bits: " << example_key << endl;
+    cout << "C0 (after PC1):   " << Key_PC1_Left(example_key) << endl;
+    cout << "D0 (after PC1):   " << Key_PC1_Right(example_key) << endl;
 }
