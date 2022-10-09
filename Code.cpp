@@ -159,10 +159,6 @@ bitset<28> D0(bitset<64> fullKey)
 
 int main()
 {
-    // string Word = "Universe";
-    // cout << data_to_blocks(Word) << endl;
-    // cout << leftSide(data_to_blocks(Word)) << endl;
-    // cout << rightSide(data_to_blocks(Word)) << endl;
 
     bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
