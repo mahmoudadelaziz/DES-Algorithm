@@ -129,7 +129,31 @@ bitset<32> R0(bitset<64> Data_after_IP)
     */
     bitset<32> R0(0);
     for (int i = 1; i < 65; i++)
-        R0[32-i] = Data_after_IP[64 - IP_Table[32 + i - 1]];
+        R0[32 - i] = Data_after_IP[64 - IP_Table[32 + i - 1]];
+    return R0;
+}
+
+bitset<28> C0(bitset<64> fullKey)
+{
+    /*
+    Takes the 64-bit data block,
+    and returns the left side after performing Initial Permutation.
+    */
+    bitset<28> L0(0);
+    for (int i = 1; i < 57; i++)
+        L0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[i - 1]];
+    return L0;
+}
+
+bitset<28> D0(bitset<64> fullKey)
+{
+    /*
+    Takes the 64-bit data block,
+    and returns the right side after performing Initial Permutation.
+    */
+    bitset<28> R0(0);
+    for (int i = 1; i < 57; i++)
+        R0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[28 + i - 1]];
     return R0;
 }
 
@@ -140,8 +164,13 @@ int main()
     // cout << leftSide(data_to_blocks(Word)) << endl;
     // cout << rightSide(data_to_blocks(Word)) << endl;
 
-    bitset <64> example_message (0x0123456789ABCDEF);
+    bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
     cout << "L0 (after IP):   " << L0(example_message) << endl;
     cout << "R0 (after IP):   " << R0(example_message) << endl;
+
+    bitset<64> example_key(0x133457799BBCDFF1);
+    cout << "Message in bits: " << example_key << endl;
+    cout << "C0 (after PC1):   " << C0(example_key) << endl;
+    cout << "D0 (after PC1):   " << D0(example_key) << endl;
 }
