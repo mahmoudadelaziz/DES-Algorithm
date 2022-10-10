@@ -178,13 +178,13 @@ bitset<28> circularLeftShift(bitset<28> halfKey, int number_of_shifts)
     and a number of shifts (either 1 or 2) that depends on which round we're in,
     and performs left-shift on it (as required by the DES round)
     */
-    bitset<28> roundShiftedHalfKey(0);
+    bitset<28> roundShift_HalfKey(0);
     for (int i = number_of_shifts; i < 28 + number_of_shifts; i++)
-        roundShiftedHalfKey[i - number_of_shifts] = halfKey[((26 * number_of_shifts) + i) % 28];
-    return roundShiftedHalfKey;
+        roundShift_HalfKey[i - number_of_shifts] = halfKey[((26 * number_of_shifts) + i) % 28];
+    return roundShift_HalfKey;
 }
 
-bitset<48> subKey(bitset<28> Ci, bitset<28> Di)
+bitset<48> generate_subKey(bitset<28> Ci, bitset<28> Di)
 {
     /*
     Takes the two 28-bit halves of the key after left-shifting (Ci, Di),
@@ -230,7 +230,7 @@ int main()
     cout << "It should be:                    "
          << "1010101011001100111100011110" << endl;
 
-    cout << "K1:           " << subKey(circularLeftShift(Key_PC1_Left(example_key), 1), circularLeftShift(Key_PC1_Right(example_key), 1)) << endl;
+    cout << "K1:           " << generate_subKey(circularLeftShift(Key_PC1_Left(example_key), 1), circularLeftShift(Key_PC1_Right(example_key), 1)) << endl;
     cout << "K1 Should be: "
          << "000110110000001011101111111111000111000001110010" << endl;
 }

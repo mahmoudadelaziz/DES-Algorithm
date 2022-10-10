@@ -71,7 +71,7 @@ bitset<28> circularLeftShift(bitset<28> halfKey, int number_of_shifts)
 }
 
 // Generate subkey Ki
-bitset<48> subKey(bitset<28> Ci, bitset<28> Di)
+bitset<48> generate_subKey(bitset<28> Ci, bitset<28> Di)
 {
     /*
     Takes the two 28-bit halves of the key after left-shifting (Ci, Di),
@@ -118,7 +118,7 @@ int main()
     }
     cout << "D1 and C1 combined: " << CDi << endl;
 
-    cout << "K1:           " << subKey(circularLeftShift(Key_PC1_Left(fullKey), 1), circularLeftShift(Key_PC1_Right(fullKey), 1)) << endl;
+    cout << "K1:           " << generate_subKey(circularLeftShift(Key_PC1_Left(fullKey), 1), circularLeftShift(Key_PC1_Right(fullKey), 1)) << endl;
     cout << "K1 Should be: "
          << "000110110000001011101111111111000111000001110010" << endl;
 
