@@ -39,7 +39,7 @@ int keyPermutationChoice_1_Table[56] =
      21,    13,     5,      28,     20,     12,     4};
 
 // Indices for Permutation Choice 2 for the Key
-int keyPermutationChoice_2_Table[48] = 
+int keyPermutationChoice_2_Table[48] =
     {14,    17,     11,     24,     1,      5, 
 	3,      28,     15,     6,      21,     10, 
 	23,     19,     12,     4,      26,     8, 
