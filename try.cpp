@@ -47,24 +47,17 @@ bitset<28> Key_PC1_Right(bitset<64> fullKey)
 }
 
 // Circular left shift
-bitset<28> leftShift(bitset<28> halfKey, int round_number)
+bitset<28> circularLeftShift(bitset<28> halfKey, int number_of_shifts)
 {
     /*
     Takes a half of the key after PC1 (C0, or D0),
-    and a round number that corresponds to a number of left shifts,
+    and a number of shifts (either 1 or 2) that depends on which round we're in,
     and performs left-shift on it (as required by the DES round)
     */
-    bitset<28> roundedhalfKey(0);
-    // for (int i = round_number; i < 28 + round_number; i++)
-    //     roundedhalfKey[i-1] = halfKey[(27 + i - 1) % 28];
-    // This loop works well for shifting by one
-
-    for (int i = round_number; i < 28 + round_number; i++)
-    {
-        roundedhalfKey[i - round_number] = halfKey[(27 * round_number + i - round_number) % 28];
-    }
-
-    return roundedhalfKey;
+    bitset<28> roundShiftedHalfKey(0);
+    for (int i = number_of_shifts; i < 28 + number_of_shifts; i++)
+        roundShiftedHalfKey[i - number_of_shifts] = halfKey[((26 * number_of_shifts) + i) % 28];
+    return roundShiftedHalfKey;
 }
 
 int main()
@@ -74,11 +67,11 @@ int main()
     // cout << "D0:    " << Key_PC1_Right(fullKey) << endl;
 
     // cout << "left shift C0 by one:      " << (Key_PC1_Left(fullKey) << 1) << endl;
-    cout << "(Circular) left shift C0 by one: " << leftShift(Key_PC1_Left(fullKey), 1) << endl;
+    cout << "(Circular) left shift C0 by one: " << circularLeftShift(Key_PC1_Left(fullKey), 1) << endl;
     cout << "It should be:                    "
          << "1110000110011001010101011111" << endl;
-    cout << "(Circular) left shift C0 by two: " << leftShift(Key_PC1_Left(fullKey), 2) << endl;
-    cout << "(Circular) left shift D0 by one: " << leftShift(Key_PC1_Right(fullKey), 1) << endl;
+    cout << "(Circular) left shift C0 by two: " << circularLeftShift(Key_PC1_Left(fullKey), 2) << endl;
+    cout << "(Circular) left shift D0 by one: " << circularLeftShift(Key_PC1_Right(fullKey), 1) << endl;
     cout << "It should be:                    "
          << "1010101011001100111100011110" << endl;
     // playing with circular loops
