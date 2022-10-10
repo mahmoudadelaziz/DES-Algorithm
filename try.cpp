@@ -55,8 +55,14 @@ bitset<28> leftShift(bitset<28> halfKey, int round_number)
     and performs left-shift on it (as required by the DES round)
     */
     bitset<28> roundedhalfKey(0);
+    // for (int i = round_number; i < 28 + round_number; i++)
+    //     roundedhalfKey[i-1] = halfKey[(27 + i - 1) % 28];
+    // This loop works well for shifting by one
+
     for (int i = round_number; i < 28 + round_number; i++)
-        roundedhalfKey[i-1] = halfKey[(27 + i - 1) % 28];
+    {
+        roundedhalfKey[i - round_number] = halfKey[(27 * round_number + i - round_number) % 28];
+    }
 
     return roundedhalfKey;
 }
@@ -65,13 +71,16 @@ int main()
 {
     bitset<64> fullKey(0x133457799BBCDFF1);
     cout << "C0:                              " << Key_PC1_Left(fullKey) << endl;
-    //cout << "D0:    " << Key_PC1_Right(fullKey) << endl;
+    // cout << "D0:    " << Key_PC1_Right(fullKey) << endl;
 
-    //cout << "left shift C0 by one:      " << (Key_PC1_Left(fullKey) << 1) << endl;
-    cout << "(Circular) left shift C0 by one: " << leftShift(Key_PC1_Left(fullKey), 2) << endl;
-    cout << "It should be:                    " << "1110000110011001010101011111" << endl;
+    // cout << "left shift C0 by one:      " << (Key_PC1_Left(fullKey) << 1) << endl;
+    cout << "(Circular) left shift C0 by one: " << leftShift(Key_PC1_Left(fullKey), 1) << endl;
+    cout << "It should be:                    "
+         << "1110000110011001010101011111" << endl;
+    cout << "(Circular) left shift C0 by two: " << leftShift(Key_PC1_Left(fullKey), 2) << endl;
     cout << "(Circular) left shift D0 by one: " << leftShift(Key_PC1_Right(fullKey), 1) << endl;
-    cout << "It should be:                    " << "1010101011001100111100011110" << endl;
+    cout << "It should be:                    "
+         << "1010101011001100111100011110" << endl;
     // playing with circular loops
     // cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
     // cout << "Playing with circular arrays... Exploring!" << endl;
