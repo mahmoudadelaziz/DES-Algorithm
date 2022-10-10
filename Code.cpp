@@ -127,5 +127,6 @@ int main()
     cout << "C0 (after PC1):   " << Key_PC1_Left(example_key) << endl;
     cout << "D0 (after PC1):   " << Key_PC1_Right(example_key) << endl;
 
-    //Moving on....
+    // Moving on...
+    // Perform Left-circular shift on C0, and D0.
 }
