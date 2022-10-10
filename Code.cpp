@@ -219,9 +219,6 @@ int main()
     cout << "C0 (after PC1):   " << Key_PC1_Left(example_key) << endl;
     cout << "D0 (after PC1):   " << Key_PC1_Right(example_key) << endl;
 
-    // Moving on...
-    // Perform Left-circular shift on C0, and D0.
-    // Testing circular left-shift function...
     cout << "(Circular) left shift C0 by one: " << circularLeftShift(Key_PC1_Left(example_key), 1) << endl;
     cout << "It should be:                    "
          << "1110000110011001010101011111" << endl;
@@ -233,4 +230,6 @@ int main()
     cout << "K1:           " << generate_subKey(circularLeftShift(Key_PC1_Left(example_key), 1), circularLeftShift(Key_PC1_Right(example_key), 1)) << endl;
     cout << "K1 Should be: "
          << "000110110000001011101111111111000111000001110010" << endl;
+
+    // Moving on...!
 }
