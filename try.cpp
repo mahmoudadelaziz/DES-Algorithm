@@ -87,18 +87,9 @@ bitset<48> subKey(bitset<28> Ci, bitset<28> Di)
     }
 
     bitset<48> subKey_i(0);
-    for(int i = 1; i < 48; i++)
-    {
-        subKey_i[48 - i] = CDi[56 - keyPermutationChoice_2_Table[i-1]];
-    }
+    for (int i = 1; i < 48; i++)
+        subKey_i[48 - i] = CDi[56 - keyPermutationChoice_2_Table[i - 1]];
 
-    // for (int i = 1; i < 28; i++)
-    // {
-    //     // Right part of Ki
-    //     subKey_i[i - 1] = Di[27 - keyPermutationChoice_2_Table[i - 1]];
-    //     // Left part of Ki (prints all zeros?! Why?!)
-    //     // subKey_i[28 + i - 1] = Ci[28 - keyPermutationChoice_2_Table[28 + i - 1]];
-    // }
     return subKey_i;
 }
 
@@ -119,7 +110,6 @@ int main()
 
     // Generate subkey K1
 
-
     bitset<56> CDi(0);
     for (int i = 0; i < 28; i++)
     {
@@ -127,10 +117,11 @@ int main()
         CDi[28 + i] = circularLeftShift(Key_PC1_Right(fullKey), 1)[i];
     }
     cout << "D1 and C1 combined: " << CDi << endl;
-    
+
     cout << "K1:           " << subKey(circularLeftShift(Key_PC1_Left(fullKey), 1), circularLeftShift(Key_PC1_Right(fullKey), 1)) << endl;
-    cout << "K1 Should be: " << "000110110000001011101111111111000111000001110010" << endl;
-    
+    cout << "K1 Should be: "
+         << "000110110000001011101111111111000111000001110010" << endl;
+
     // playing with circular loops
     // cout << "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*" << endl;
     // cout << "Playing with circular arrays... Exploring!" << endl;

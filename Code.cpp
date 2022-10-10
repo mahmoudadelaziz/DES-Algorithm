@@ -184,6 +184,28 @@ bitset<28> circularLeftShift(bitset<28> halfKey, int number_of_shifts)
     return roundShiftedHalfKey;
 }
 
+bitset<48> subKey(bitset<28> Ci, bitset<28> Di)
+{
+    /*
+    Takes the two 28-bit halves of the key after left-shifting (Ci, Di),
+    and returns the 48-bit subKey of the current DES round.
+    */
+
+    // First, combine C1 and D1
+    bitset<56> CDi(0);
+    for (int i = 0; i < 28; i++)
+    {
+        CDi[i] = Di[i];
+        CDi[28 + i] = Ci[i];
+    }
+
+    bitset<48> subKey_i(0);
+    for (int i = 1; i < 48; i++)
+        subKey_i[48 - i] = CDi[56 - keyPermutationChoice_2_Table[i - 1]];
+
+    return subKey_i;
+}
+
 int main()
 {
     // Driver code
@@ -207,4 +229,8 @@ int main()
     cout << "(Circular) left shift D0 by one: " << circularLeftShift(Key_PC1_Right(example_key), 1) << endl;
     cout << "It should be:                    "
          << "1010101011001100111100011110" << endl;
+
+    cout << "K1:           " << subKey(circularLeftShift(Key_PC1_Left(example_key), 1), circularLeftShift(Key_PC1_Right(example_key), 1)) << endl;
+    cout << "K1 Should be: "
+         << "000110110000001011101111111111000111000001110010" << endl;
 }
