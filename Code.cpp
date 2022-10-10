@@ -14,7 +14,6 @@
 
 using namespace std;
 
-#define DATABLOCK_BIT_LENGTH 64
 // Indices for the Initial Permuation
 int IP_Table[64] =
     {
