@@ -218,20 +218,46 @@ int EP[48] = {
     28, 29, 31, 31, 32,  1
 };
 
+int P[32] = {
+    16,  7, 20, 21,
+    29, 12, 28, 17,
+     1, 15, 23, 26,
+     5, 18, 31, 10,
+     2,  8, 24, 14,
+    32, 27,  3,  9,
+    19, 13, 30,  6,
+    22, 11,  4, 25
+};
+
 bitset<48> function_expansion_permutation(bitset<32> old) {
     bitset<48> result(0);
     for (int i = 0; i < 48; i++) {
-        result[i] = old[EP[i]];
+        result[i] = old[EP[i] - 1];
     }
     return result;
-}
+};
+
+
+bitset<32> function_permutation(bitset<32> old) {
+    bitset<32> result(0);
+    for (int i = 0; i < 32; i++) {
+        result[i] = old[P[i] - 1];
+    }
+    return result;
+};
 
 int main()
 {
     // bitset<32> x(0);
-    // cout << "EP" << endl; 
+    // cout << "EP" << endl;
     // cout << "Old" << x << endl;
-    // cout << "New" << expansion_permutation(x) << endl;
+    // cout << "New" << function_expansion_permutation(x) << endl;
+    bitset<32> x(0);
+    x[15] = 1;
+    cout << "EP" << endl;
+    cout << "Old" << x << endl;
+    cout << "New" << function_permutation(x) << endl;
+
     bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
     cout << "L0 (after IP):   " << L0(example_message) << endl;
