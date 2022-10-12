@@ -206,9 +206,32 @@ bitset<48> generate_subKey(bitset<28> Ci, bitset<28> Di)
     return subKey_i;
 }
 
+////////////////////////  Function block  /////////////////////////////////////
+int EP[48] = {
+    32,  1,  2,  3,  4,  5,
+     4,  5,  6,  7,  8,  9,
+     8,  9, 10, 11, 12, 13,
+    12, 13, 14, 15, 16, 17,
+    16, 17, 18, 19, 20, 21,
+    20, 21, 22, 23, 24, 25,
+    24, 25, 26, 27, 28, 29,
+    28, 29, 31, 31, 32,  1
+};
+
+bitset<48> function_expansion_permutation(bitset<32> old) {
+    bitset<48> result(0);
+    for (int i = 0; i < 48; i++) {
+        result[i] = old[EP[i]];
+    }
+    return result;
+}
+
 int main()
 {
-    // Driver code
+    // bitset<32> x(0);
+    // cout << "EP" << endl; 
+    // cout << "Old" << x << endl;
+    // cout << "New" << expansion_permutation(x) << endl;
     bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
     cout << "L0 (after IP):   " << L0(example_message) << endl;
