@@ -229,6 +229,55 @@ int P[32] = {
     22, 11,  4, 25
 };
 
+int S1[64] = {
+    14,  4, 13,  1,  2, 15, 11,  8,  3, 10,  6, 12,  5,  9,  0,  7,
+     0, 15,  7,  4, 14,  2, 13,  1, 10,  6, 12, 11,  9,  5,  3,  8,
+     4,  1, 14,  8, 13,  6,  2, 11, 15, 12,  9,  7,  3, 10,  5,  0,
+    15, 12,  8,  2,  4,  9,  1,  7,  5, 11,  3, 14, 10,  0,  6, 13
+};
+int S2[64] = {
+    15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10,
+    3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5,
+    0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15,
+    13,	8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9
+};
+int S3[64] = {
+    10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8,
+    13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1,
+    1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12,
+    13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7
+};
+int S4[64] = {
+    7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15,
+    13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9,
+    10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4,
+    3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14
+};
+int S5[64] = {
+    2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9,
+    14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6,
+    4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14,
+    11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3
+};
+int S6[64] = {
+    12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11,
+    10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8,
+    9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6,
+    4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13
+};
+int S7[64] = {
+    4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1,
+    13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6,
+    1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2,
+    6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12
+};
+int S8[64] = {
+    13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7,
+    1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2,
+    7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8,
+    2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11
+};
+
 bitset<48> function_expansion_permutation(bitset<32> old) {
     bitset<48> result(0);
     for (int i = 0; i < 48; i++) {
@@ -236,7 +285,6 @@ bitset<48> function_expansion_permutation(bitset<32> old) {
     }
     return result;
 };
-
 
 bitset<32> function_permutation(bitset<32> old) {
     bitset<32> result(0);
@@ -246,17 +294,47 @@ bitset<32> function_permutation(bitset<32> old) {
     return result;
 };
 
+bitset<6> function_s_box(bitset<6> old) {
+    // take 6 bits over 8 turns
+    bitset<32> result;
+    bitset<6> block;
+    for(int i = 0; i < 6; i += 6) {
+        block.reset();
+        for(int j = i ; j < i + 6; j++){
+            block[j - i] = old[j];
+        }
+        // convert outer bits to row (decimal), inner to column (decimal)
+        string str = block.to_string();
+        cout << "str: " << str << endl;
+        string first = str[0];
+        string second = str[1];
+        bitset<2> row(strcat(first, second));
+        bitset<4> col(str.substr(1, 4));
+        // int row = stoi(str.front() + str.back());
+        // int col = stoi(str.substr(1, 4));
+        cout << "row: " << row << endl;
+        cout << "col: " << col << endl;
+        for(int i = 0; i < 6; i++)
+            cout << i << " " << str[i] << endl;
+    }
+    return block;
+    // pick value by formula row *16 + column * 4
+    // convert value to binary and add to output in order
+};
+
 int main()
 {
+    bitset<6> x("100001");
+    cout << function_s_box(x) << endl;
     // bitset<32> x(0);
     // cout << "EP" << endl;
     // cout << "Old" << x << endl;
     // cout << "New" << function_expansion_permutation(x) << endl;
-    bitset<32> x(0);
-    x[15] = 1;
-    cout << "EP" << endl;
-    cout << "Old" << x << endl;
-    cout << "New" << function_permutation(x) << endl;
+    // bitset<32> x(0);
+    // x[15] = 1;
+    // cout << "EP" << endl;
+    // cout << "Old" << x << endl;
+    // cout << "New" << function_permutation(x) << endl;
 
     bitset<64> example_message(0x0123456789ABCDEF);
     cout << "Message in bits: " << example_message << endl;
