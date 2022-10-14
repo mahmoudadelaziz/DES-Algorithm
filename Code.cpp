@@ -6,7 +6,7 @@
     before we deliver the final executable.
 
     >> Walking through the example at:
-    https://captanu.wordpress.com/2015/04/05/des/
+    https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 */
 
 #include <iostream>
@@ -322,21 +322,34 @@ bitset<48> expansion_Permutation(bitset<32> old)
 
 int main()
 {
-    // Testing Key functions
+    // -------------------- Testing Key functions --------------------
     bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
-    cout << "Key in bits: " << example_key << endl;
+    // cout << "Key in bits: " << example_key << endl;
     bitset <28> C0 = Key_PC1_Left(example_key);
     bitset <28> D0 = Key_PC1_Right(example_key);
-    cout << "C0 (after PC1):   " << C0 << endl;
-    cout << "D0 (after PC1):   " << D0 << endl;
+    // cout << "C0 (after PC1):   " << C0 << endl;
+    // cout << "D0 (after PC1):   " << D0 << endl;
 
     bitset <28> C1 = circularLeftShift(C0, 1);
     bitset <28> D1 = circularLeftShift(D0, 1);
-    cout << "C1:   " << C1 << endl;
-    cout << "D1:   " << D1 << endl;
+    // cout << "C1:   " << C1 << endl;
+    // cout << "D1:   " << D1 << endl;
 
     bitset <48> K1 = generate_subKey(C1, D1);
 
-    cout << "K1: " << K1 << endl;
+    // cout << "K1: " << K1 << endl;
+    // -------------------- Testing Key functions --------------------
 
+    // -------------------- Testing Text functions --------------------
+    bitset <64> example_M ("0000000100100011010001010110011110001001101010111100110111101111");
+    // Initial Permutation (IP)
+    bitset <32> L_0 = L0(example_M);
+    bitset <32> R_0 = R0(example_M);
+    cout << "L0: " << L_0 << endl;
+    cout << "R0: " << R_0 << endl;
+    // Expansion Permutation (EP)
+    bitset <48> E_R0 = expansion_Permutation(R_0);
+    cout << "E(R0): " << E_R0 << endl;
+    // -------------------- Testing Text functions --------------------
+    cout << "E(R0) XOR (K1) = " << ((E_R0) ^ (K1)) << endl;
 }
