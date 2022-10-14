@@ -137,8 +137,22 @@ bitset<48> generate_subKey(bitset<28> Ci, bitset<28> Di)
     return subKey_i;
 }
 
+//function to return an array
+bitset <4> * arr (int x)
+{
+    bitset <4> myKeys[16];
+    for(int i = 0; i < 16; i++)
+        myKeys[i] = 2 + (i/2);
+    return myKeys;
+}
+
 int main()
 {
+    // Trying array of keys
+    bitset<4> *theKeys = arr(2);
+    cout << theKeys[0];
+
+
     // bitset<64> fullKey(0x133457799BBCDFF1);
     // cout << "C0:                              " << Key_PC1_Left(fullKey) << endl;
     // // cout << "D0:    " << Key_PC1_Right(fullKey) << endl;
@@ -180,18 +194,18 @@ int main()
     // // cout << "\nDone!" << endl;
 
     // Array of arrays
-    int x[4] = {1, 3, 5, 7};
-    int y[4] = {11, 33, 55, 77};
-    int z[4] = {2, 4, 6, 8};
+    // int x[4] = {1, 3, 5, 7};
+    // int y[4] = {11, 33, 55, 77};
+    // int z[4] = {2, 4, 6, 8};
 
-    int *xyz[3] = {x, y, z};
-    int sBox_no;
-    int sBox_element;
-    while (1)
-    {
-        cin >> sBox_no;
-        cin >> sBox_element;
-        cout << "\n" << SBox_number[sBox_no][sBox_element] << endl;
-    }
+    // int *xyz[3] = {x, y, z};
+    // int sBox_no;
+    // int sBox_element;
+    // while (1)
+    // {
+    //     cin >> sBox_no;
+    //     cin >> sBox_element;
+    //     cout << "\n" << SBox_number[sBox_no][sBox_element] << endl;
+    // }
     return 0;
 }

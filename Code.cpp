@@ -4,7 +4,6 @@
     All functions implemented in other code files
     must be integrated into this file in the end
     before we deliver the final executable.
-
     >> Walking through the example at:
     https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
 */
@@ -17,15 +16,14 @@ using namespace std;
 // Indices for the Initial Permuation
 int IP_Table[64] =
     {
-        58,    50,   42,    34,    26,   18,    10,    2,
-        60,    52,   44,    36,    28,   20,    12,    4,
-        62,    54,   46,    38,    30,   22,    14,    6,
-        64,    56,   48,    40,    32,   24,    16,    8,
-        57,    49,   41,    33,    25,   17,     9,    1,
-        59,    51,   43,    35,    27,   19,    11,    3,
-        61,    53,   45,    37,    29,   21,    13,    5,
-        63,    55,   47,    39,    31,   23,    15,    7
-    };
+        58, 50, 42, 34, 26, 18, 10, 2,
+        60, 52, 44, 36, 28, 20, 12, 4,
+        62, 54, 46, 38, 30, 22, 14, 6,
+        64, 56, 48, 40, 32, 24, 16, 8,
+        57, 49, 41, 33, 25, 17, 9, 1,
+        59, 51, 43, 35, 27, 19, 11, 3,
+        61, 53, 45, 37, 29, 21, 13, 5,
+        63, 55, 47, 39, 31, 23, 15, 7};
 
 // Indices for Permutation Choice 1 for the Key
 int keyPermutationChoice_1_Table[56] =
@@ -48,6 +46,9 @@ int keyPermutationChoice_2_Table[48] =
      30, 40, 51, 45, 33, 48,
      44, 49, 39, 56, 34, 53,
      46, 42, 50, 36, 29, 32};
+
+// int shifts[16] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
+int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
 
 int EP_Table[48] =
     {32, 1, 2, 3, 4, 5, 4, 5,
@@ -152,7 +153,7 @@ bitset<48> generate_subKey(bitset<28> Ci, bitset<28> Di)
     }
 
     bitset<48> subKey_i(0);
-    for (int i = 1; i < 48; i++)
+    for (int i = 1; i < 49; i++)
         subKey_i[48 - i] = CDi[56 - keyPermutationChoice_2_Table[i - 1]];
 
     return subKey_i;
@@ -271,46 +272,49 @@ bitset<32> S_Box(bitset<48> old)
     return result;
 };
 
+bitset<48> generate_roundKey(bitset<28> C0, bitset<28> D0, int round_number)
+{
+
+    bitset<28> C_i = circularLeftShift(C0, shifts[round_number]);
+    bitset<28> D_i = circularLeftShift(D0, shifts[round_number]);
+    // K_i = generate_subKey(C_i, D_i);
+    return generate_subKey(C_i, D_i);
+}
+
 int main()
 {
-    // -------------------- Testing Key functions --------------------
+    // Key preparation
     bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
-    // cout << "Key in bits: " << example_key << endl;
     bitset<28> C0 = Key_PC1_Left(example_key);
     bitset<28> D0 = Key_PC1_Right(example_key);
-    // cout << "C0 (after PC1):   " << C0 << endl;
-    // cout << "D0 (after PC1):   " << D0 << endl;
+    // Key generation loop
+    for (int round = 1; round < 17; round++)
+    {
+        bitset<48> Ki = generate_roundKey(C0, D0, (round-1));
+        cout << "K" << round << " = " << Ki << endl;
+    }
 
-    bitset<28> C1 = circularLeftShift(C0, 1);
-    bitset<28> D1 = circularLeftShift(D0, 1);
-    // cout << "C1:   " << C1 << endl;
-    // cout << "D1:   " << D1 << endl;
+    
+    // // -------------------- Testing Text functions --------------------
+    // bitset<64> example_M("0000000100100011010001010110011110001001101010111100110111101111");
+    // // Initial Permutation (IP)
+    // bitset<32> L_0 = L0(example_M);
+    // bitset<32> R_0 = R0(example_M);
+    // cout << "L0: " << L_0 << endl;
+    // cout << "R0: " << R_0 << endl;
+    // // Expansion Permutation (EP)
+    // bitset<48> E_R0 = expansion_Permutation(R_0);
+    // cout << "E(R0): " << E_R0 << endl;
+    // // -------------------- Testing Text functions --------------------
+    // // cout << "E(R0) XOR (K1) = " << ((E_R0) ^ (K1)) << endl;
 
-    bitset<48> K1 = generate_subKey(C1, D1);
+    // // S-Box function
+    // // Hard-coded E(R0) XOR K1
+    // bitset<48> sBox_input("011000010001011110111010100001100110010100100111");
+    // cout << "S-Box output: " << S_Box(sBox_input) << endl;
 
-    // cout << "K1: " << K1 << endl;
-    // -------------------- Testing Key functions --------------------
-
-    // -------------------- Testing Text functions --------------------
-    bitset<64> example_M("0000000100100011010001010110011110001001101010111100110111101111");
-    // Initial Permutation (IP)
-    bitset<32> L_0 = L0(example_M);
-    bitset<32> R_0 = R0(example_M);
-    cout << "L0: " << L_0 << endl;
-    cout << "R0: " << R_0 << endl;
-    // Expansion Permutation (EP)
-    bitset<48> E_R0 = expansion_Permutation(R_0);
-    cout << "E(R0): " << E_R0 << endl;
-    // -------------------- Testing Text functions --------------------
-    cout << "E(R0) XOR (K1) = " << ((E_R0) ^ (K1)) << endl;
-
-    // S-Box function
-    // Hard-coded E(R0) XOR K1
-    bitset<48> sBox_input("011000010001011110111010100001100110010100100111");
-    cout << "S-Box output: " << S_Box(sBox_input) << endl;
-
-    // Simple Permutation
-    cout << "F:            " << simplePermutation(S_Box(sBox_input)) << endl;
+    // // Simple Permutation
+    // cout << "F:            " << simplePermutation(S_Box(sBox_input)) << endl;
 
     // Moving on...
 }
