@@ -225,7 +225,7 @@ int expansionPermutation_Table[48] = {
     24, 25, 26, 27, 28, 29,
     28, 29, 30, 31, 32, 1};
 
-int P[32] = {
+int Permutation[32] = {
     16, 7, 20, 21,
     29, 12, 28, 17,
     1, 15, 23, 26,
@@ -322,56 +322,21 @@ bitset<48> expansion_Permutation(bitset<32> old)
 
 int main()
 {
-    // bitset<6> x("100001");
-    // cout << function_s_box(x) << endl;
-    // bitset<32> x(0);
-    // cout << "EP" << endl;
-    // cout << "Old" << x << endl;
-    // cout << "New" << function_expansion_permutation(x) << endl;
-    // bitset<32> x(0);
-    // x[15] = 1;
-    // cout << "EP" << endl;
-    // cout << "Old" << x << endl;
-    // cout << "New" << function_permutation(x) << endl;
+    // Testing Key functions
+    bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
+    cout << "Key in bits: " << example_key << endl;
+    bitset <28> C0 = Key_PC1_Left(example_key);
+    bitset <28> D0 = Key_PC1_Right(example_key);
+    cout << "C0 (after PC1):   " << C0 << endl;
+    cout << "D0 (after PC1):   " << D0 << endl;
 
-    bitset<64> example_message(0x0123456789ABCDEF);
-    // cout << "Message in bits: " << example_message << endl;
-    // cout << "L0 (after IP):   " << L0(example_message) << endl;
-    // cout << "R0 (after IP):   " << R0(example_message) << endl;
+    bitset <28> C1 = circularLeftShift(C0, 1);
+    bitset <28> D1 = circularLeftShift(D0, 1);
+    cout << "C1:   " << C1 << endl;
+    cout << "D1:   " << D1 << endl;
 
-    // bitset<64> example_key(0x133457799BBCDFF1);
-    // cout << "Key in bits: " << example_key << endl;
-    // cout << "C0 (after PC1):   " << Key_PC1_Left(example_key) << endl;
-    // cout << "D0 (after PC1):   " << Key_PC1_Right(example_key) << endl;
+    bitset <48> K1 = generate_subKey(C1, D1);
 
-    // cout << "(Circular) left shift C0 by one: " << circularLeftShift(Key_PC1_Left(example_key), 1) << endl;
-    // cout << "It should be:                    "
-    //      << "1110000110011001010101011111" << endl;
-    // cout << "(Circular) left shift C0 by two: " << circularLeftShift(Key_PC1_Left(example_key), 2) << endl;
-    // cout << "(Circular) left shift D0 by one: " << circularLeftShift(Key_PC1_Right(example_key), 1) << endl;
-    // cout << "It should be:                    "
-    //      << "1010101011001100111100011110" << endl;
-
-    // cout << "K1:           " << generate_subKey(circularLeftShift(Key_PC1_Left(example_key), 1), circularLeftShift(Key_PC1_Right(example_key), 1)) << endl;
-    // cout << "K1 Should be: "
-    //      << "000110110000001011101111111111000111000001110010" << endl;
-
-    // Moving on...!
-
-    // Expansion Permutation
-    // bitset<48> EP_R0 = expansion_Permutation(R0(example_message));
-    // cout << "R0 (after EP):           " << EP_R0 << endl;
-    
-    // // Example solution
-    // bitset<48> r0("011110100001010101010101011110100001010101010111");
-    // cout << "R0 (after EP) should be: " << r0 << endl;
-
-    // // Comparison
-    // cout << "Differences:             " << ((EP_R0) ^ (r0)) << endl;
-
-    bitset <32> R0_example ("11110000101010101111000010101010");
-    bitset <48> E_R0 = expansion_Permutation(R0_example);
-    cout << R0_example << endl;
-    cout << E_R0 << endl;
+    cout << "K1: " << K1 << endl;
 
 }
