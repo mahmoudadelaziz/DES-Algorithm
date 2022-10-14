@@ -280,22 +280,7 @@ bitset<48> expansion_Permutation(bitset<32> old)
 {
     bitset<48> result(0);
     for (int i = 1; i < 49; i++)
-    {
         result[48 - i] = old[(32) - (EP_Table[(i - 1)])];
-        // debugging
-        // if (i == 47)
-        // {
-        //     // cout << "i: " << i <<  endl;
-        //     // cout << "In EP_Table[i] = " << expansionPermutation_Table[i] << endl;
-        //     // cout << "we should put old[i] = " << old[i] << endl;
-        //     // cout << "But we put result[i] = " << result[i] << endl;
-        //     cout << "At index " << i << endl;
-        //     cout << "Data value: " << old[32-i] << endl;
-        //     cout << "EP_Table[i] = " << EP_Table[i-1] << endl;
-        //     //cout << "At the result index " << 48-i;
-        //     //cout << "But it puts " << result[i] << "instead" << endl;
-        // }
-    }
     return result;
 };
 
@@ -384,9 +369,9 @@ int main()
     // // Comparison
     // cout << "Differences:             " << ((EP_R0) ^ (r0)) << endl;
 
-    // bitset <32> R0_example ("11110000101010101111000010101010");
-    // bitset <48> E_R0 = expansion_Permutation(R0_example);
-    // cout << R0_example << endl;
-    // cout << E_R0 << endl;
+    bitset <32> R0_example ("11110000101010101111000010101010");
+    bitset <48> E_R0 = expansion_Permutation(R0_example);
+    cout << R0_example << endl;
+    cout << E_R0 << endl;
 
 }
