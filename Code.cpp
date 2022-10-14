@@ -225,7 +225,7 @@ int expansionPermutation_Table[48] = {
     24, 25, 26, 27, 28, 29,
     28, 29, 30, 31, 32, 1};
 
-int Permutation[32] = {
+int simplePermutation_table[32] = {
     16, 7, 20, 21,
     29, 12, 28, 17,
     1, 15, 23, 26,
@@ -287,17 +287,16 @@ bitset<48> expansion_Permutation(bitset<32> old)
     return result;
 };
 
-// bitset<32> function_permutation(bitset<32> old) {
-//     bitset<32> result(0);
-//     for (int i = 0; i < 32; i++) {
-//         result[i] = old[P[i] - 1];
-//     }
-//     return result;
-// };
+bitset<32> simplePermutation(bitset<32> old)
+{
+    bitset<32> result(0);
+    for (int i = 1; i < 33; i++)
+        result[32 - i] = old[32 - simplePermutation_table[i - 1]];
+    return result;
+};
 
 bitset<32> S_Box(bitset<48> old)
 {
-    // take 6 bits over 8 turns
     // Index components:
     int row = 0;
     int column = 0;
@@ -318,19 +317,14 @@ bitset<32> S_Box(bitset<48> old)
         // Column: inner bits of the block
         column = 1 * block[1] + 2 * block[2] + 4 * block[3] + 8 * block[4];
         // Index will look like: [column + 16 * row + (64 * table)]
-        bitset <4> target (SBox_number[7-table_no][column + 16 * row]);
+        bitset<4> target(SBox_number[7 - table_no][column + 16 * row]);
         for (int k = 0; k < 4; k++)
         {
-            result[k + table_no*4] = target[k];
+            result[k + table_no * 4] = target[k];
         }
-        cout << "Block " << table_no << ": "<< block << endl;
         table_no++;
-        // debugging
-        // cout << "block " << i << " : " << block << endl;
     }
     return result;
-    // pick value by formula row *16 + column * 4
-    // convert value to binary and add to output in order
 };
 
 int main()
@@ -369,5 +363,10 @@ int main()
     // S-Box function
     // Hard-coded E(R0) XOR K1
     bitset<48> sBox_input("011000010001011110111010100001100110010100100111");
-    cout << S_Box(sBox_input) << endl;
+    cout << "S-Box output: " << S_Box(sBox_input) << endl;
+
+    // Simple Permutation
+    cout << "F:            " << simplePermutation(S_Box(sBox_input)) << endl;
+
+    // Moving on...
 }
