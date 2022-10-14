@@ -283,18 +283,18 @@ bitset<48> expansion_Permutation(bitset<32> old)
     {
         result[48 - i] = old[(32) - (EP_Table[(i - 1)])];
         // debugging
-        if (i == 47)
-        {
-            // cout << "i: " << i <<  endl;
-            // cout << "In EP_Table[i] = " << expansionPermutation_Table[i] << endl;
-            // cout << "we should put old[i] = " << old[i] << endl;
-            // cout << "But we put result[i] = " << result[i] << endl;
-            cout << "At index " << i << endl;
-            cout << "Data value: " << old[32-i] << endl;
-            cout << "EP_Table[i] = " << EP_Table[i-1] << endl;
-            //cout << "At the result index " << 48-i;
-            //cout << "But it puts " << result[i] << "instead" << endl;
-        }
+        // if (i == 47)
+        // {
+        //     // cout << "i: " << i <<  endl;
+        //     // cout << "In EP_Table[i] = " << expansionPermutation_Table[i] << endl;
+        //     // cout << "we should put old[i] = " << old[i] << endl;
+        //     // cout << "But we put result[i] = " << result[i] << endl;
+        //     cout << "At index " << i << endl;
+        //     cout << "Data value: " << old[32-i] << endl;
+        //     cout << "EP_Table[i] = " << EP_Table[i-1] << endl;
+        //     //cout << "At the result index " << 48-i;
+        //     //cout << "But it puts " << result[i] << "instead" << endl;
+        // }
     }
     return result;
 };
@@ -352,7 +352,7 @@ int main()
     bitset<64> example_message(0x0123456789ABCDEF);
     // cout << "Message in bits: " << example_message << endl;
     // cout << "L0 (after IP):   " << L0(example_message) << endl;
-    cout << "R0 (after IP):   " << R0(example_message) << endl;
+    // cout << "R0 (after IP):   " << R0(example_message) << endl;
 
     // bitset<64> example_key(0x133457799BBCDFF1);
     // cout << "Key in bits: " << example_key << endl;
@@ -374,13 +374,19 @@ int main()
     // Moving on...!
 
     // Expansion Permutation
-    bitset<48> EP_R0 = expansion_Permutation(R0(example_message));
-    cout << "R0 (after EP):           " << EP_R0 << endl;
+    // bitset<48> EP_R0 = expansion_Permutation(R0(example_message));
+    // cout << "R0 (after EP):           " << EP_R0 << endl;
     
-    // Example solution
-    bitset<48> r0("011110100001010101010101011110100001010101010111");
-    cout << "R0 (after EP) should be: " << r0 << endl;
+    // // Example solution
+    // bitset<48> r0("011110100001010101010101011110100001010101010111");
+    // cout << "R0 (after EP) should be: " << r0 << endl;
 
-    // Comparison
-    cout << "Differences:             " << ((EP_R0) ^ (r0)) << endl;
+    // // Comparison
+    // cout << "Differences:             " << ((EP_R0) ^ (r0)) << endl;
+
+    // bitset <32> R0_example ("11110000101010101111000010101010");
+    // bitset <48> E_R0 = expansion_Permutation(R0_example);
+    // cout << R0_example << endl;
+    // cout << E_R0 << endl;
+
 }
