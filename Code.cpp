@@ -276,6 +276,9 @@ int S8[64] = {
     7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8,
     2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11};
 
+// Make an array of S-boxes to iterate through
+int *SBox_number[8] = {S1, S2, S3, S4, S5, S6, S7, S8};
+
 bitset<48> expansion_Permutation(bitset<32> old)
 {
     bitset<48> result(0);
@@ -292,64 +295,79 @@ bitset<48> expansion_Permutation(bitset<32> old)
 //     return result;
 // };
 
-// bitset<6> function_s_box(bitset<6> old) {
-//     // take 6 bits over 8 turns
-//     bitset<32> result;
-//     bitset<6> block;
-//     for(int i = 0; i < 6; i += 6) {
-//         block.reset();
-//         for(int j = i ; j < i + 6; j++){
-//             block[j - i] = old[j];
-//         }
-//         // convert outer bits to row (decimal), inner to column (decimal)
-//         string str = block.to_string();
-//         cout << "str: " << str << endl;
-//         char first = str[0];
-//         char second = str[1];
-//         bitset<2> row(strcat(first, second));
-//         bitset<4> col(str.substr(1, 4));
-//         // int row = stoi(str.front() + str.back());
-//         // int col = stoi(str.substr(1, 4));
-//         cout << "row: " << row << endl;
-//         cout << "col: " << col << endl;
-//         for(int i = 0; i < 6; i++)
-//             cout << i << " " << str[i] << endl;
-//     }
-//     return block;
-//     // pick value by formula row *16 + column * 4
-//     // convert value to binary and add to output in order
-// };
+bitset<32> S_Box(bitset<48> old)
+{
+    // take 6 bits over 8 turns
+    // Index components:
+    int row = 0;
+    int column = 0;
+    int table_no = 0;
+    bitset<32> result;
+    bitset<6> block;
+    for (int i = 0; i < 48; i += 6)
+    {
+        block.reset();
+        for (int j = i; j < i + 6; j++)
+        {
+            block[j - i] = old[j];
+        }
+        // Each 6-bit block defines the S-box index
+        // Table: number of the block we're on (i/6)
+        // Row: LSB [0] and MSB [5] of the block
+        row = 1 * block[0] + 2 * block[5];
+        // Column: inner bits of the block
+        column = 1 * block[1] + 2 * block[2] + 4 * block[3] + 8 * block[4];
+        // Index will look like: [column + 16 * row + (64 * table)]
+        bitset <4> target (SBox_number[7-table_no][column + 16 * row]);
+        for (int k = 0; k < 4; k++)
+        {
+            result[k + table_no*4] = target[k];
+        }
+        cout << "Block " << table_no << ": "<< block << endl;
+        table_no++;
+        // debugging
+        // cout << "block " << i << " : " << block << endl;
+    }
+    return result;
+    // pick value by formula row *16 + column * 4
+    // convert value to binary and add to output in order
+};
 
 int main()
 {
     // -------------------- Testing Key functions --------------------
     bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
     // cout << "Key in bits: " << example_key << endl;
-    bitset <28> C0 = Key_PC1_Left(example_key);
-    bitset <28> D0 = Key_PC1_Right(example_key);
+    bitset<28> C0 = Key_PC1_Left(example_key);
+    bitset<28> D0 = Key_PC1_Right(example_key);
     // cout << "C0 (after PC1):   " << C0 << endl;
     // cout << "D0 (after PC1):   " << D0 << endl;
 
-    bitset <28> C1 = circularLeftShift(C0, 1);
-    bitset <28> D1 = circularLeftShift(D0, 1);
+    bitset<28> C1 = circularLeftShift(C0, 1);
+    bitset<28> D1 = circularLeftShift(D0, 1);
     // cout << "C1:   " << C1 << endl;
     // cout << "D1:   " << D1 << endl;
 
-    bitset <48> K1 = generate_subKey(C1, D1);
+    bitset<48> K1 = generate_subKey(C1, D1);
 
     // cout << "K1: " << K1 << endl;
     // -------------------- Testing Key functions --------------------
 
     // -------------------- Testing Text functions --------------------
-    bitset <64> example_M ("0000000100100011010001010110011110001001101010111100110111101111");
+    bitset<64> example_M("0000000100100011010001010110011110001001101010111100110111101111");
     // Initial Permutation (IP)
-    bitset <32> L_0 = L0(example_M);
-    bitset <32> R_0 = R0(example_M);
+    bitset<32> L_0 = L0(example_M);
+    bitset<32> R_0 = R0(example_M);
     cout << "L0: " << L_0 << endl;
     cout << "R0: " << R_0 << endl;
     // Expansion Permutation (EP)
-    bitset <48> E_R0 = expansion_Permutation(R_0);
+    bitset<48> E_R0 = expansion_Permutation(R_0);
     cout << "E(R0): " << E_R0 << endl;
     // -------------------- Testing Text functions --------------------
     cout << "E(R0) XOR (K1) = " << ((E_R0) ^ (K1)) << endl;
+
+    // S-Box function
+    // Hard-coded E(R0) XOR K1
+    bitset<48> sBox_input("011000010001011110111010100001100110010100100111");
+    cout << S_Box(sBox_input) << endl;
 }
