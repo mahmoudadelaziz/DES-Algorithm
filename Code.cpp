@@ -25,6 +25,17 @@ int IP_Table[64] =
         61, 53, 45, 37, 29, 21, 13, 5,
         63, 55, 47, 39, 31, 23, 15, 7};
 
+// Indices for Inverse Permutation
+int inversePermutation[64] =
+    {40, 8, 48, 16, 56, 24, 64, 32,
+     39, 7, 47, 15, 55, 23, 63, 31,
+     38, 6, 46, 14, 54, 22, 62, 30,
+     37, 5, 45, 13, 53, 21, 61, 29,
+     36, 4, 44, 12, 52, 20, 60, 28,
+     35, 3, 43, 11, 51, 19, 59, 27,
+     34, 2, 42, 10, 50, 18, 58, 26,
+     33, 1, 41, 9, 49, 17, 57, 25};
+
 // Indices for Permutation Choice 1 for the Key
 int keyPermutationChoice_1_Table[56] =
     {57, 49, 41, 33, 25, 17, 9,
@@ -272,6 +283,19 @@ bitset<32> S_Box(bitset<48> old)
     return result;
 };
 
+bitset<64> do_inversePermutation(bitset<32> left, bitset<32> right)
+{
+    bitset<64> result(0);
+    for (int i = 1; i < 33; i++)
+    {
+        result[32 - i] = right[32 - inversePermutation[i - 1]];
+        result[64 - i] = left[32 - inversePermutation[32 + i - 1]];
+    }
+    return result;
+}
+
+// bitset <64> do_inversePermutation(bitset<32> L_16, bitset<32> R_16)
+
 bitset<48> generate_roundKey(bitset<28> C0, bitset<28> D0, int round_number)
 {
 
@@ -283,18 +307,17 @@ bitset<48> generate_roundKey(bitset<28> C0, bitset<28> D0, int round_number)
 
 int main()
 {
-    // Key preparation
-    bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
-    bitset<28> C0 = Key_PC1_Left(example_key);
-    bitset<28> D0 = Key_PC1_Right(example_key);
-    // Key generation loop
-    for (int round = 1; round < 17; round++)
-    {
-        bitset<48> Ki = generate_roundKey(C0, D0, (round-1));
-        cout << "K" << round << " = " << Ki << endl;
-    }
+    // Key preparation (WORKING WELL!)
+    // bitset<64> example_key("0001001100110100010101110111100110011011101111001101111111110001");
+    // bitset<28> C0 = Key_PC1_Left(example_key);
+    // bitset<28> D0 = Key_PC1_Right(example_key);
+    // // Key generation loop
+    // for (int round = 1; round < 17; round++)
+    // {
+    //     bitset<48> Ki = generate_roundKey(C0, D0, (round - 1));
+    //     cout << "K" << round << " = " << Ki << endl;
+    // }
 
-    
     // // -------------------- Testing Text functions --------------------
     // bitset<64> example_M("0000000100100011010001010110011110001001101010111100110111101111");
     // // Initial Permutation (IP)
@@ -317,4 +340,10 @@ int main()
     // cout << "F:            " << simplePermutation(S_Box(sBox_input)) << endl;
 
     // Moving on...
+
+    // IP-1 test
+    bitset<32> L16("01000011010000100011001000110100");
+    bitset<32> R16("00001010010011001101100110010101");
+
+    cout << do_inversePermutation(R16, L16) << endl;
 }
