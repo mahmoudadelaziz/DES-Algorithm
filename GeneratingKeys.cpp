@@ -21,10 +21,14 @@ u64 Key_PC1(u64 fullKey)
     int PC1_ind = 0;
     for (int i = 0; i < 56; i++)
     {
-        PC1_ind = 64 - PC1_Table[i];
-        mask = (fullKey & 1UL << PC1_ind) != 0;
-        index_to_set = 63 - i;
-        newKey |= (mask << index_to_set);
+        // PC1_ind = 64 - PC1_Table[i];
+        // mask = (fullKey & 1UL << PC1_ind) != 0;
+        // index_to_set = 63 - i;
+        // newKey |= (mask << index_to_set);
+
+
+        // Another attempt
+        newKey |= (((fullKey & 1UL << (PC1_Table[i] - 1)) != 0) << i);
     }
     return newKey;
 }
