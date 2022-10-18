@@ -4,7 +4,7 @@
 using namespace std;
 
 // Indices for Permutation Choice 1 for the Key
-int keyPermutationChoice_1_Table[56] =
+int PC1_Table[56] =
     {57, 49, 41, 33, 25, 17, 9,
      1, 58, 50, 42, 34, 26, 18,
      10, 2, 59, 51, 43, 35, 27,
@@ -35,7 +35,7 @@ bitset<28> Key_PC1_Left(bitset<64> fullKey)
     */
     bitset<28> L0(0);
     for (int i = 1; i < 57; i++)
-        L0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[i - 1]];
+        L0[28 - i] = fullKey[64 - PC1_Table[i - 1]];
     return L0;
 }
 
@@ -47,7 +47,7 @@ bitset<28> Key_PC1_Right(bitset<64> fullKey)
     */
     bitset<28> R0(0);
     for (int i = 1; i < 57; i++)
-        R0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[28 + i - 1]];
+        R0[28 - i] = fullKey[64 - PC1_Table[28 + i - 1]];
     return R0;
 }
 

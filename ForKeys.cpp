@@ -5,67 +5,51 @@ using namespace std;
 
 typedef unsigned long long u64;
 
-u64 read_DES_input(const char *key)
-{
-    u64 value = 0;
-    for (int i; i < 16; i++)
-    {
-        char c = key[i];
-        if (c <= '0' && c >= '9')
-            value |= (u64)(c - '0') << ((15 - i) << 2);
-        else if (c <= 'A' && c >= 'F')
-            value |= (u64)(c - 'A' + 10) << ((15 - i) << 2);
-        else if (c <= 'a' && c >= 'f')
-            value |= (u64)(c - 'a' + 10) << ((15 - i) << 2);
-    }
-    return value;
-}
+int PC1_Table[56] =
+    {57, 49, 41, 33, 25, 17, 9,
+     1, 58, 50, 42, 34, 26, 18,
+     10, 2, 59, 51, 43, 35, 27,
+     19, 11, 3, 60, 52, 44, 36,
+     63, 55, 47, 39, 31, 23, 15,
+     7, 62, 54, 46, 38, 30, 22,
+     14, 6, 61, 53, 45, 37, 29,
+     21, 13, 5, 28, 20, 12, 4}; // list of indices
 
-// void to_hex(char &s)
-// {
-//     for (int i = 0; i < 16; i++)
-//         switch (s)
-//         {
-//         case 'A':
-//             10;
-//         case 'B':
-//             11;
-//         case 'C':
-//             12;
-//         case 'D':
-//             13;
-//         case 'E':
-//             14;
-//         case 'F':
-//             15;
-//         }
-// }
+u64 Key_PC1(u64 fullKey)
+{
+    /* takes the full 64-bit key,
+    and returns a 56-bit key by moving around the bits of the full key. */
+    u64 newKey = 0;
+    bool mask = 0;
+    int index_to_set = 0;
+    for (int i = 0; i < 56; i++)
+    {
+        mask = ((fullKey & 1UL << (64 - PC1_Table[i])) != 0);
+        index_to_set = 63 - i;
+        newKey |= mask << index_to_set;
+
+        // newKey |= (fullKey >> (((64 - PC1_Table[i]) & 1)) != 0) << (63-i);
+        // newKey |= (fullKey >> (63 - PC1_Table[64 - i]) & 1) << i;
+    }
+    // newKey = newKey | (((fullKey & (1UL << (64-PC1_Table[i])))) != 0) << (55-i);
+    return newKey;
+}
 
 int main()
 {
 
-    u64 x = 0x133457799BBCDFF1;
-    // x = read_DES_input("133457799BBCDFF1");
-    cout << x << endl;
-    // cout << "Size of long long data type: " << sizeof(long long) << " bytes." << endl;
+    u64 example_key = 0x133457799BBCDFF1;
 
-    // cout << "0001001100110100010101110111100110011011101111001101111111110001";
-    // cout << endl;
-    // int index_to_check;
-    // while (1)
-    // {
-    //     cout << "Enter the bit index to read: ";
-    //     cin >> index_to_check;
-    //     cout << ((x & 1 << index_to_check) != 0) << endl;
-    // }
-
-    // u64 left_shift_count = (1UL << 63);
-    // cout << (((x & left_shift_count)) != 0);
-
+    // Debugging (this loop prints out the result in binary)
     for (int i = 0; i < 64; i++)
-        cout << ((x & 1UL << (63-i)) != 0);
+        cout << ((Key_PC1(example_key) & 1UL << (63 - i)) != 0);
+    cout << endl;
+    // cout << "\nShould be: \n";
+    // cout << "0001001100110100010101110111100110011011101111001101111111110001";
 
-    cout << "\nShould be: \n";
-    cout << "0001001100110100010101110111100110011011101111001101111111110001";
+    // cout << "my key     : " << bitset<64>(Key_PC1(example_key)) << endl;
+
+    cout << "should be: \n0000000011110000110011001010101011110101010101100110011110001111" << endl;
+    // This is the correct result from a solved example
     return 0;
 }

@@ -56,7 +56,7 @@ int S8[64] = {
 // Make an array of S-boxes to iterate through
 int *SBox_number[8] = {S1,S2,S3,S4,S5,S6,S7,S8};
 
-int keyPermutationChoice_1_Table[56] =
+int PC1_Table[56] =
     {57, 49, 41, 33, 25, 17, 9,
      1, 58, 50, 42, 34, 26, 18,
      10, 2, 59, 51, 43, 35, 27,
@@ -84,7 +84,7 @@ bitset<28> Key_PC1_Left(bitset<64> fullKey)
     */
     bitset<28> L0(0);
     for (int i = 1; i < 57; i++)
-        L0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[i - 1]];
+        L0[28 - i] = fullKey[64 - PC1_Table[i - 1]];
     return L0;
 }
 
@@ -96,7 +96,7 @@ bitset<28> Key_PC1_Right(bitset<64> fullKey)
     */
     bitset<28> R0(0);
     for (int i = 1; i < 57; i++)
-        R0[28 - i] = fullKey[64 - keyPermutationChoice_1_Table[28 + i - 1]];
+        R0[28 - i] = fullKey[64 - PC1_Table[28 + i - 1]];
     return R0;
 }
 
