@@ -32,7 +32,7 @@ u64 Key_PC1(u64 fullKey)
 int main()
 {
     u64 example_key = 0x133457799BBCDFF1;
-    // Debugging (this loop prints out the result in binary)
+    // this loop prints out the result in binary
     cout << "Full key:\n";
     for (int i = 0; i < 64; i++)
         cout << ((example_key & 1UL << (63 - i)) != 0);
