@@ -51,8 +51,10 @@ int main()
     ull message = 0x0123456789ABCDEF; // from example
     ull result = 0;
 
+    // -------- WORK IN PROGRESS --------------
     for (int i = 0; i < 64; i++)
         result |= (((message & 1UL << (IP_Table[i] - 1)) != 0) << i);
+    // -------- WORK IN PROGRESS --------------
 
     cout << "Message: ";
     for (int i = 0; i < 64; i++)
