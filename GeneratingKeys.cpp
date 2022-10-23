@@ -30,9 +30,10 @@ int main()
         cout << ((example_key & 1UL << (63 - i)) != 0);
 
     cout << endl;
+    u64 result = Key_PC1(example_key); 
     cout << "Key PC1 result:\n";
     for (int i = 0; i < 64; i++)
-        cout << ((Key_PC1(example_key) & 1UL << (63 - i)) != 0);
+        cout << ((result & 1UL << (63 - i)) != 0);
 
     cout << endl;
     cout << "Key PC1 result should be: \n0000000011110000110011001010101011110101010101100110011110001111" << endl;
