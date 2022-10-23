@@ -3,7 +3,7 @@
 
 using namespace std;
 
-typedef unsigned long long ull;
+typedef unsigned long long u64;
 
 int IP_Table[64] =
     {
@@ -16,53 +16,37 @@ int IP_Table[64] =
         61, 53, 45, 37, 29, 21, 13, 5,
         63, 55, 47, 39, 31, 23, 15, 7}; // Indices for the Initial Permuation
 
+u64 do_initial_permutation(u64 M)
+{
+    u64 result = 0;
+    for (int i = 0; i < 64; ++i)
+        result |= (M >> (64 - IP_Table[i]) & 1) << 64 - (i + 1);
+    return result;
+}
+
 int main()
 {
     // Declare a file variable
     ifstream input_data;
-
     // Open the file
     input_data.open("./sample.txt");
 
-    // Read an array of 8 characters (64-bit data block)
-    char ch[8];
-    for (int i = 0; i < 8; i++)
-    {
-        ch[i] = input_data.get();
-        cout << ch[i];
-    }
-
-    ull dataBlock = 0;
-    cout << "\nSize of dataBlock = " << sizeof(dataBlock) << " bytes." << endl;
-
-    for (int i = 0; i < 8; i++)
-    {
-        // Characters in reverse order from the array
-        dataBlock |= (ull)ch[7 - i] << (8 * i);
-
-        // Debugging (you could see the block filling up!)
-        cout << "Iteration " << i + 1 << ": ";
-        for (int j = 0; j < 64; j++)
-            cout << ((dataBlock & 1UL << (63 - j)) != 0);
-        cout << endl;
-    }
-
+    u64 dataBlock = 0;
     /* Trying out initial permutation */
-    ull message = 0x0123456789ABCDEF; // from example
-    ull result = 0;
+    u64 message = 0x0123456789ABCDEF; // from example
+    u64 result = 0;
 
-    // -------- WORK IN PROGRESS --------------
-    for (int i = 0; i < 64; i++)
-        result |= (((message & 1UL << (IP_Table[i] - 1)) != 0) << i);
-    // -------- WORK IN PROGRESS --------------
-
-    cout << "Message: ";
+    cout << "Message:   ";
     for (int i = 0; i < 64; i++)
         cout << ((message & 1UL << (63 - i)) != 0);
 
-    cout << "\nafter IP: \n";
+    u64 IP_result = do_initial_permutation(message);
+
+    cout << "\nafter IP:  ";
     for (int i = 0; i < 64; i++)
-        cout << ((result & 1UL << (63 - i)) != 0);
+        cout << ((IP_result & 1UL << (63 - i)) != 0);
+
+    cout << "\nshould be: 1100110000000000110011001111111111110000101010101111000010101010";
 
     return 0;
 }

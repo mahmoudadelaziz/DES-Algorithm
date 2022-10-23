@@ -10,7 +10,7 @@ int PC1_Table[56] =
      7, 62, 54, 46, 38, 30, 22,
      14, 6, 61, 53, 45, 37, 29,
      21, 13, 5, 28, 20, 12, 4}; // list of indices
-     
+
 u64 Key_PC1(u64 fullKey)
 {
     /* takes the full 64-bit key,
@@ -20,16 +20,7 @@ u64 Key_PC1(u64 fullKey)
     int index_to_set = 0;
     int PC1_ind = 0;
     for (int i = 0; i < 56; i++)
-    {
-        // PC1_ind = 64 - PC1_Table[i];
-        // mask = (fullKey & 1UL << PC1_ind) != 0;
-        // index_to_set = 63 - i;
-        // newKey |= (mask << index_to_set);
-
-
-        // Another attempt
-        newKey |= (((fullKey & 1UL << (PC1_Table[i] - 1)) != 0) << i);
-    }
+        newKey |= (fullKey >> (64 - PC1_Table[56 - 1 - i]) & 1) << i;
     return newKey;
 }
 
@@ -40,12 +31,12 @@ int main()
     cout << "Full key:\n";
     for (int i = 0; i < 64; i++)
         cout << ((example_key & 1UL << (63 - i)) != 0);
-    
+
     cout << endl;
     cout << "Key PC1 result:\n";
     for (int i = 0; i < 64; i++)
         cout << ((Key_PC1(example_key) & 1UL << (63 - i)) != 0);
-        
+
     cout << endl;
     cout << "Key PC1 result should be: \n0000000011110000110011001010101011110101010101100110011110001111" << endl;
     return 0;

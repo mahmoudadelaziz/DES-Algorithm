@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-typedef unsigned long long ull;
+typedef unsigned long long u64;
 
 int IP_Table[64] =
     {
@@ -26,7 +26,7 @@ int main()
     //cout << "The message in binary (before IP): " << dataBlock << endl;
 
     // Performing IP
-    ull result = 0;
+    u64 result = 0;
 
     for (int i = 1; i < 65; i++)
     {
