@@ -16,9 +16,6 @@ u64 Key_PC1(u64 fullKey)
     /* takes the full 64-bit key,
     and returns a 56-bit key by moving around the bits of the full key. */
     u64 newKey = 0;
-    bool mask = 0;
-    int index_to_set = 0;
-    int PC1_ind = 0;
     for (int i = 0; i < 56; i++)
         newKey |= (fullKey >> (64 - PC1_Table[56 - 1 - i]) & 1) << i;
     return newKey;
