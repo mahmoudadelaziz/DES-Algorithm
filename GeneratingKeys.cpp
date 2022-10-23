@@ -30,12 +30,32 @@ int main()
         cout << ((example_key & 1UL << (63 - i)) != 0);
 
     cout << endl;
-    u64 result = Key_PC1(example_key); 
+    u64 result = Key_PC1(example_key);
     cout << "Key PC1 result:\n";
     for (int i = 0; i < 64; i++)
         cout << ((result & 1UL << (63 - i)) != 0);
 
     cout << endl;
     cout << "Key PC1 result should be: \n0000000011110000110011001010101011110101010101100110011110001111" << endl;
+
+    // Get C0 and D0
+    unsigned int C0 = 0;
+    unsigned int D0 = 0;
+
+    for (int i = 0; i < 28; i++)
+        D0 |= ((result & 1 << i) != 0) << i;
+
+    for (int i = 0; i < 28; i++)
+        C0 |= ((result & 1ULL << (i + 28)) != 0) << i;
+
+    // Checking...
+    cout << "C0: \n";
+    for (int i = 0; i < 28; i++)
+        cout << ((C0 & 1UL << (27 - i)) != 0);
+
+    cout << "\nD0: \n";
+    for (int i = 0; i < 28; i++)
+        cout << ((D0 & 1UL << (27 - i)) != 0);
+
     return 0;
 }
