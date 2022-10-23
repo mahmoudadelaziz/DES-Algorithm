@@ -42,11 +42,8 @@ int main()
     unsigned int C0 = 0;
     unsigned int D0 = 0;
 
-    for (int i = 0; i < 28; i++)
-        D0 |= ((result & 1 << i) != 0) << i;
-
-    for (int i = 0; i < 28; i++)
-        C0 |= ((result & 1ULL << (i + 28)) != 0) << i;
+    C0 = int((result & 0x0FFFFFFFF0000000LL)>>28);
+    D0 = int((result & 0x00000000FFFFFFFFLL));
 
     // Checking...
     cout << "C0: \n";
