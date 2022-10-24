@@ -106,26 +106,5 @@ int main()
         cout << endl;
     }
 
-    // // Round Left-shifting
-    // unsigned int C1 = 0;
-    // unsigned int D1 = 0;
-
-    // // Left-shift by one
-    // C1 = left_shift(C0, 1);
-    // D1 = left_shift(D0, 1);
-
-    // // Merging C1-D1
-    // // u64 subkey_before_PC2 = ((u64)C1) << 28 | D1;
-
-    // cout << "\nC1D1:\n";
-    // for (int i = 0; i < 64; i++)
-    //     cout << ((subkey_before_PC2 & 1UL << (63 - i)) != 0);
-
-    // // u64 K1 = Key_PC2(subkey_before_PC2);
-
-    // cout << "\nK1:\n";
-    // for (int i = 0; i < 64; i++)
-    //     cout << ((K1 & 1UL << (63 - i)) != 0);
-
     return 0;
 }
