@@ -148,6 +148,17 @@ u64 do_expansion_permutation(int Rn)
     return newExpData;
 }
 
+int do_SBox(u64 input)
+{
+    /* Takes 48-bit input of (E(Rn) XOR Kn),
+    to give you 32-bit output of the SBoxes */
+    int result = 0;
+
+    int S1_val_selector = (input & 0x0000003F);
+
+    return result;
+}
+
 int main()
 {
     u64 example_message = 0x0123456789ABCDEF;
@@ -190,7 +201,12 @@ int main()
         cout << ((R0_XOR_K1 & 1UL << (63 - i)) != 0);
 
     // Now S-boxes!
-    
+    // Let's try S-value selectors (6-bits each)
+    int val_selector = (R0_XOR_K1 & 0x0000003F);
+    // Show result
+    cout << "\nS1 val_selector: ";
+    for (int i = 0; i < 64; i++)
+        cout << ((val_selector & 1UL << (63 - i)) != 0);
 
     return 0;
 }
