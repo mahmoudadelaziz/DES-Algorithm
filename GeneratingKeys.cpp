@@ -21,6 +21,8 @@ int PC2_Table[48] =
      44, 49, 39, 56, 34, 53,
      46, 42, 50, 36, 29, 32};
 
+int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
+
 u64 Key_PC1(u64 fullKey)
 {
     /* takes the full 64-bit key,
@@ -29,6 +31,13 @@ u64 Key_PC1(u64 fullKey)
     for (int i = 0; i < 56; i++)
         newKey |= (fullKey >> (64 - PC1_Table[56 - 1 - i]) & 1) << i;
     return newKey;
+}
+
+int left_shift(int halfkey, int n)
+{
+    /* Performs bit left-shifting on Cn or Dn by the appropriate n */
+    halfkey = (((halfkey << n) | (halfkey >> (28 - n))) & 0x000000000FFFFFFFLL);
+    return halfkey;
 }
 
 u64 Key_PC2(u64 CnDn)
@@ -73,29 +82,50 @@ int main()
     cout << "\nD0: \n";
     for (int i = 0; i < 28; i++)
         cout << ((D0 & 1UL << (27 - i)) != 0);
+    cout << endl;
 
-    // Round Left-shifting
-    unsigned int C1 = 0;
-    unsigned int D1 = 0;
+    // SINGLE FOR LOOP TO GIVE 16 SUBKEYS!! //
+    u64 subkey_before_PC2 = 0;
+    int Cn = 0;
+    int Dn = 0;
+    u64 Kn = 0;
+    for (int i = 0; i < 16; i++)
+    {
+        // Get Cn and Dn
+        Cn = left_shift(C0, shifts[i]);
+        Dn = left_shift(D0, shifts[i]);
+        // Get CnDn
+        subkey_before_PC2 = ((u64)Cn) << 28 | Dn;
+        // Get Kn
+        Kn = Key_PC2(subkey_before_PC2);
 
-    // Left-shift by one
-    C1 = (((C0 << 1) | (C0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
-    D1 = (((D0 << 1) | (D0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
+        // Show results
+        cout << "K" << (i + 1) << ": ";
+        for (int i = 0; i < 48; i++)
+            cout << ((Kn & 1UL << (47 - i)) != 0);
+        cout << endl;
+    }
 
-    // Merging C1-D1
-    u64 subkey_before_PC2 = ((u64)C1) << 28 | D1;
+    // // Round Left-shifting
+    // unsigned int C1 = 0;
+    // unsigned int D1 = 0;
 
-    cout << "\nC1D1:\n";
-    for (int i = 0; i < 64; i++)
-        cout << ((subkey_before_PC2 & 1UL << (63 - i)) != 0);
+    // // Left-shift by one
+    // C1 = left_shift(C0, 1);
+    // D1 = left_shift(D0, 1);
 
-    u64 K1 = Key_PC2(subkey_before_PC2);
+    // // Merging C1-D1
+    // // u64 subkey_before_PC2 = ((u64)C1) << 28 | D1;
 
-    cout << "\nK1:\n";
-    for (int i = 0; i < 64; i++)
-        cout << ((K1 & 1UL << (63 - i)) != 0);
+    // cout << "\nC1D1:\n";
+    // for (int i = 0; i < 64; i++)
+    //     cout << ((subkey_before_PC2 & 1UL << (63 - i)) != 0);
 
+    // // u64 K1 = Key_PC2(subkey_before_PC2);
 
+    // cout << "\nK1:\n";
+    // for (int i = 0; i < 64; i++)
+    //     cout << ((K1 & 1UL << (63 - i)) != 0);
 
     return 0;
 }
