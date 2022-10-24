@@ -62,16 +62,11 @@ int main()
     C1 = (((C0 << 1) | (C0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
     D1 = (((D0 << 1) | (D0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
 
-    // Debugging
-    cout << "\nC1 (decimal): " << C1;
-    cout << "\nC1 (binary): ";
-    for (int i = 0; i < 32; i++)
-        cout << ((C1 & 1UL << (31 - i)) != 0);
+    // Merging C1-D1
+    u64 subkey_before_PC2 = ((u64)C1) << 28 | D1;
 
-    cout << "\nD1 (decimal): " << D1;
-    cout << "\nD1 (binary): ";
-    for (int i = 0; i < 32; i++)
-        cout << ((D1 & 1UL << (31 - i)) != 0);
-
+    cout << "\nC1D1:\n";
+    for (int i = 0; i < 64; i++)
+        cout << ((subkey_before_PC2 & 1UL << (63 - i)) != 0);
     return 0;
 }
