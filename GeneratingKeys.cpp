@@ -42,8 +42,8 @@ int main()
     unsigned int C0 = 0;
     unsigned int D0 = 0;
 
-    C0 = int((result & 0x0FFFFFFFF0000000LL)>>28);
-    D0 = int((result & 0x00000000FFFFFFFFLL));
+    C0 = int((result & 0x00FFFFFFF0000000LL)>>28);
+    D0 = int((result & 0x000000000FFFFFFFLL));
 
     // Checking...
     cout << "C0: \n";
