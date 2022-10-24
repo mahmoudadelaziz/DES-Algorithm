@@ -42,7 +42,7 @@ int main()
     unsigned int C0 = 0;
     unsigned int D0 = 0;
 
-    C0 = int((result & 0x00FFFFFFF0000000LL)>>28);
+    C0 = int((result & 0x00FFFFFFF0000000LL) >> 28);
     D0 = int((result & 0x000000000FFFFFFFLL));
 
     // Checking...
@@ -53,6 +53,25 @@ int main()
     cout << "\nD0: \n";
     for (int i = 0; i < 28; i++)
         cout << ((D0 & 1UL << (27 - i)) != 0);
+
+    // Round Left-shifting
+    unsigned int C1 = 0;
+    unsigned int D1 = 0;
+
+    // Left-shift by one
+    C1 = (((C0 << 1) | (C0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
+    D1 = (((D0 << 1) | (D0 >> (28 - 1))) & 0x000000000FFFFFFFLL);
+
+    // Debugging
+    cout << "\nC1 (decimal): " << C1;
+    cout << "\nC1 (binary): ";
+    for (int i = 0; i < 32; i++)
+        cout << ((C1 & 1UL << (31 - i)) != 0);
+
+    cout << "\nD1 (decimal): " << D1;
+    cout << "\nD1 (binary): ";
+    for (int i = 0; i < 32; i++)
+        cout << ((D1 & 1UL << (31 - i)) != 0);
 
     return 0;
 }
