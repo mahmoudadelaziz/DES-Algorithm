@@ -179,8 +179,18 @@ int main()
     cout << "\nE(R0):  ";
     for (int i = 0; i < 64; i++)
         cout << ((E_R0 & 1UL << (63 - i)) != 0);
+    cout << endl;
 
+    // Get E(R0) XOR K1
+    u64 K1 = 0x1B02EFFC7072;
+    u64 R0_XOR_K1 = E_R0 ^ K1;
+    // Show result
+    cout << "F(R0, K1): ";
+    for (int i = 0; i < 64; i++)
+        cout << ((R0_XOR_K1 & 1UL << (63 - i)) != 0);
 
-        
+    // Now S-boxes!
+    
+
     return 0;
 }
