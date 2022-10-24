@@ -153,9 +153,21 @@ int do_SBox(u64 input)
     /* Takes 48-bit input of (E(Rn) XOR Kn),
     to give you 32-bit output of the SBoxes */
     int result = 0;
+    int val_selector = 0;
+    int row = 0;
+    int column = 0;
+    int box_no = 0;
 
-    int S1_val_selector = (input & 0x0000003F);
+    for (int i = 0; i < 8; i++)
+    {
+        // Selects the 6-bit value which will determine the index
+        val_selector = (input & (0x0000003FULL << 6*i)) >> (6*i);
+        row = ((val_selector >> 5) << 1 ) | (val_selector & 1);
+        column = (val_selector >> 1) & 0x0000000F;
+        box_no = 7 - i;
 
+        result |= ((SBox_number[box_no][row * 16 + column]) << (28 - (7 - i) * 4));
+    }
     return result;
 }
 
