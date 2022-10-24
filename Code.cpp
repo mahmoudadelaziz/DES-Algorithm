@@ -161,13 +161,21 @@ int do_SBox(u64 input)
     for (int i = 0; i < 8; i++)
     {
         // Selects the 6-bit value which will determine the index
-        val_selector = (input & (0x0000003FULL << 6*i)) >> (6*i);
-        row = ((val_selector >> 5) << 1 ) | (val_selector & 1);
+        val_selector = (input & (0x0000003FULL << 6 * i)) >> (6 * i);
+        row = ((val_selector >> 5) << 1) | (val_selector & 1);
         column = (val_selector >> 1) & 0x0000000F;
         box_no = 7 - i;
 
         result |= ((SBox_number[box_no][row * 16 + column]) << (28 - (7 - i) * 4));
     }
+    return result;
+}
+
+int do_simple_permutation(int M)
+{
+    int result = 0;
+    for (int i = 0; i < 32; ++i)
+        result |= (M >> (32 - simplePermutation_table[i]) & 1) << 32 - (i + 1);
     return result;
 }
 
@@ -216,12 +224,24 @@ int main()
     // Let's try S-value selectors (6-bits each)
     int after_SBox_1 = do_SBox(R0_XOR_K1);
     // Show result
-    cout << "\nF(R0, K1): ";
+    cout << "\nAfter SBox: ";
     for (int i = 0; i < 32; i++)
         cout << ((after_SBox_1 & 1UL << (31 - i)) != 0);
 
     // Moving on after S-Boxes...
     // Normal 32-to-32 permutation...
-    
+    int F_R0_K1 = do_simple_permutation(after_SBox_1);
+    // Show result
+    cout << "\nFinally, F(R0, K1) = ";
+    for (int i = 0; i < 32; i++)
+        cout << ((F_R0_K1 & 1UL << (31 - i)) != 0);
+
+    // R1 = L0 + f(R0, K1)
+    uint R1 = (L0 + F_R0_K1);
+    // Show result
+    cout << "\nR1 = ";
+    for (int i = 0; i < 32; i++)
+        cout << ((R1 & 1 << (31 - i)) != 0);
+
     return 0;
 }
