@@ -63,7 +63,7 @@ int PC2_Table[48] =
 // int shifts[16] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
 int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
 
-int expansionPermutation_Table[48] = {
+int EP_Table[48] = {
     32, 1, 2, 3, 4, 5,
     4, 5, 6, 7, 8, 9,
     8, 9, 10, 11, 12, 13,
@@ -139,6 +139,15 @@ u64 do_initial_permutation(u64 M)
     return result;
 }
 
+u64 do_expansion_permutation(int Rn)
+{
+    /* takes 32-bits of date and expand them into 48-bits #expanded_permutation */
+    u64 newExpData = 0;
+    for (int i = 0; i < 48; i++)
+        newExpData |= (Rn >> (48 - EP_Table[48 - 1 - i]) & 1ULL) << i;
+    return newExpData;
+}
+
 int main()
 {
     u64 example_message = 0x0123456789ABCDEF;
@@ -160,5 +169,18 @@ int main()
     for (int i = 0; i < 32; i++)
         cout << ((R0 & 1UL << (31 - i)) != 0);
 
+    // L1 = R0
+    // R1 = L0 + f(R0, K1)
+    // So, let's perform f
+
+    // Do expansion perm to get E(R0)
+    u64 E_R0 = do_expansion_permutation(R0);
+    // Show result
+    cout << "\nE(R0):  ";
+    for (int i = 0; i < 64; i++)
+        cout << ((E_R0 & 1UL << (63 - i)) != 0);
+
+
+        
     return 0;
 }
