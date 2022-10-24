@@ -141,12 +141,24 @@ u64 do_initial_permutation(u64 M)
 
 int main()
 {
+    u64 example_message = 0x0123456789ABCDEF;
     // Initial Permutation
-    u64 after_IP = do_initial_permutation(81985529216486895);
+    u64 after_IP = do_initial_permutation(example_message);
     // (Show result)
-    cout << "IP_M:";
+    cout << "IP_M:  ";
     for (int i = 0; i < 64; i++)
         cout << ((after_IP & 1UL << (63 - i)) != 0);
+
+    // Get L0 and R0
+    uint L0 = uint((after_IP & 0xFFFFFFFF00000000ULL) >> 32);
+    uint R0 = uint((after_IP & 0x00000000FFFFFFFFULL));
+    // (Show result)
+    cout << "\nL0:  ";
+    for (int i = 0; i < 32; i++)
+        cout << ((L0 & 1UL << (31 - i)) != 0);
+    cout << "\nR0:  ";
+    for (int i = 0; i < 32; i++)
+        cout << ((R0 & 1UL << (31 - i)) != 0);
 
     return 0;
 }
