@@ -15,6 +15,29 @@ using namespace std;
 typedef unsigned long long u64;
 
 /* --------------- DEFINING GLOBAL VARIABLES --------------- */
+
+int PC1_Table[56] =
+    {57, 49, 41, 33, 25, 17, 9,
+     1, 58, 50, 42, 34, 26, 18,
+     10, 2, 59, 51, 43, 35, 27,
+     19, 11, 3, 60, 52, 44, 36,
+     63, 55, 47, 39, 31, 23, 15,
+     7, 62, 54, 46, 38, 30, 22,
+     14, 6, 61, 53, 45, 37, 29,
+     21, 13, 5, 28, 20, 12, 4}; // list of indices
+
+int PC2_Table[48] =
+    {14, 17, 11, 24, 1, 5,
+     3, 28, 15, 6, 21, 10,
+     23, 19, 12, 4, 26, 8,
+     16, 7, 27, 20, 13, 2,
+     41, 52, 31, 37, 47, 55,
+     30, 40, 51, 45, 33, 48,
+     44, 49, 39, 56, 34, 53,
+     46, 42, 50, 36, 29, 32};
+
+int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
+
 // Indices for the Initial Permuation
 int IP_Table[64] =
     {
@@ -37,31 +60,6 @@ int inversePermutation[64] =
      35, 3, 43, 11, 51, 19, 59, 27,
      34, 2, 42, 10, 50, 18, 58, 26,
      33, 1, 41, 9, 49, 17, 57, 25};
-
-// Indices for Permutation Choice 1 for the Key
-int PC1_Table[56] =
-    {57, 49, 41, 33, 25, 17, 9,
-     1, 58, 50, 42, 34, 26, 18,
-     10, 2, 59, 51, 43, 35, 27,
-     19, 11, 3, 60, 52, 44, 36,
-     63, 55, 47, 39, 31, 23, 15,
-     7, 62, 54, 46, 38, 30, 22,
-     14, 6, 61, 53, 45, 37, 29,
-     21, 13, 5, 28, 20, 12, 4};
-
-// Indices for Permutation Choice 2 for the Key
-int PC2_Table[48] =
-    {14, 17, 11, 24, 1, 5,
-     3, 28, 15, 6, 21, 10,
-     23, 19, 12, 4, 26, 8,
-     16, 7, 27, 20, 13, 2,
-     41, 52, 31, 37, 47, 55,
-     30, 40, 51, 45, 33, 48,
-     44, 49, 39, 56, 34, 53,
-     46, 42, 50, 36, 29, 32};
-
-// int shifts[16] = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
-int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
 
 int EP_Table[48] = {
     32, 1, 2, 3, 4, 5,
@@ -131,6 +129,33 @@ int *SBox_number[8] = {S1, S2, S3, S4, S5, S6, S7, S8};
 
 /* ------------------ DEFINING HELPER FUNCTIONS --------------------------- */
 
+u64 Key_PC1(u64 fullKey)
+{
+    /* takes the full 64-bit key,
+    and returns a 56-bit key by moving around the bits of the full key. */
+    u64 newKey = 0;
+    for (int i = 0; i < 56; i++)
+        newKey |= (fullKey >> (64 - PC1_Table[56 - 1 - i]) & 1) << i;
+    return newKey;
+}
+
+int left_shift(int halfkey, int n)
+{
+    /* Performs bit left-shifting on Cn or Dn by the appropriate n */
+    halfkey = (((halfkey << n) | (halfkey >> (28 - n))) & 0x000000000FFFFFFFLL);
+    return halfkey;
+}
+
+u64 Key_PC2(u64 CnDn)
+{
+    /* takes the CnDn (after bit-rotation),
+    and returns a 48-bit subkey for the current DES round. */
+    u64 newKey = 0;
+    for (int i = 0; i < 48; i++)
+        newKey |= (CnDn >> (56 - PC2_Table[48 - 1 - i]) & 1) << i;
+    return newKey;
+}
+
 u64 do_initial_permutation(u64 M)
 {
     u64 result = 0;
@@ -179,69 +204,130 @@ int do_simple_permutation(int M)
     return result;
 }
 
+u64 get_Subkey(u64 inputKey, int round_no)
+{
+    u64 Kn = 0;
+    u64 K_after_PC1 = Key_PC1(inputKey);
+    // Get C0 and D0
+    unsigned int C0 = 0;
+    unsigned int D0 = 0;
+    C0 = int((K_after_PC1 & 0x00FFFFFFF0000000LL) >> 28);
+    D0 = int((K_after_PC1 & 0x000000000FFFFFFFLL));
+    int Cn = 0;
+    int Dn = 0;
+    Cn = left_shift(C0, shifts[round_no]);
+    Dn = left_shift(D0, shifts[round_no]);
+    // Get CnDn
+    u64 subkey_before_PC2 = ((u64)Cn) << 28 | Dn;
+    // Get Kn
+    Kn = Key_PC2(subkey_before_PC2);
+    return Kn;
+}
+
+// u64 ENCRYPT(u64 PT_block, u64 *allSubkeys)
+// {
+
+//     u64 CT_block = 0;
+
+//     // ------ First round (one time operations) ----------
+//     // ------ On Plaintext --------
+//     u64 after_IP = do_initial_permutation(PT_block);
+//     uint L0 = uint((after_IP & 0xFFFFFFFF00000000ULL) >> 32);
+//     uint R0 = uint((after_IP & 0x00000000FFFFFFFFULL));
+
+//     // 16 rounds of encryption
+//     for (int i = 0; i < 16; i++)
+//     {
+//         // Do expansion perm to get E(R0)
+//         u64 E_R0 = do_expansion_permutation(R0);
+
+//         // Get Kn
+
+//     }
+
+//     return CT_block;
+// }
+
 int main()
 {
-    u64 example_message = 0x0123456789ABCDEF;
-    // Initial Permutation
-    u64 after_IP = do_initial_permutation(example_message);
-    // (Show result)
-    cout << "IP_M:  ";
-    for (int i = 0; i < 64; i++)
-        cout << ((after_IP & 1UL << (63 - i)) != 0);
 
-    // Get L0 and R0
-    uint L0 = uint((after_IP & 0xFFFFFFFF00000000ULL) >> 32);
-    uint R0 = uint((after_IP & 0x00000000FFFFFFFFULL));
-    // (Show result)
-    cout << "\nL0:  ";
-    for (int i = 0; i < 32; i++)
-        cout << ((L0 & 1UL << (31 - i)) != 0);
-    cout << "\nR0:  ";
-    for (int i = 0; i < 32; i++)
-        cout << ((R0 & 1UL << (31 - i)) != 0);
+    //######## GET ARRAY OF KEYS ############
+    u64 ex_key = 0x133457799BBCDFF1; //input key
+    u64 subkeys_arr[16];
+    for (int i = 0; i < 16; i++)
+    {
+        subkeys_arr[i] = get_Subkey(ex_key, i);
+        // Show results
+        cout << "K" << (i + 1) << " = ";
+        for (int j = 0; j < 48; j++)
+            cout << ((subkeys_arr[i] & 1ULL << (47 - j)) != 0);
+        cout << endl;
+    }
+    //######## GET ARRAY OF KEYS ############
 
-    // L1 = R0
-    // R1 = L0 + f(R0, K1)
-    // So, let's perform f
+    // ############# STEP BY STEP @@@@@@@@@@@@@@@@@@@@@@@
+    // u64 example_message = 0x0123456789ABCDEF;
+    // // Initial Permutation
+    // u64 after_IP = do_initial_permutation(example_message);
+    // // (Show result)
+    // cout << "IP_M:  ";
+    // for (int i = 0; i < 64; i++)
+    //     cout << ((after_IP & 1UL << (63 - i)) != 0);
 
-    // Do expansion perm to get E(R0)
-    u64 E_R0 = do_expansion_permutation(R0);
-    // Show result
-    cout << "\nE(R0):  ";
-    for (int i = 0; i < 64; i++)
-        cout << ((E_R0 & 1UL << (63 - i)) != 0);
-    cout << endl;
+    // // Get L0 and R0
+    // uint L0 = uint((after_IP & 0xFFFFFFFF00000000ULL) >> 32);
+    // uint R0 = uint((after_IP & 0x00000000FFFFFFFFULL));
+    // // (Show result)
+    // cout << "\nL0:  ";
+    // for (int i = 0; i < 32; i++)
+    //     cout << ((L0 & 1UL << (31 - i)) != 0);
+    // cout << "\nR0:  ";
+    // for (int i = 0; i < 32; i++)
+    //     cout << ((R0 & 1UL << (31 - i)) != 0);
 
-    // Get E(R0) XOR K1
-    u64 K1 = 0x1B02EFFC7072;
-    u64 R0_XOR_K1 = E_R0 ^ K1;
-    // Show result
-    cout << "input to SBoxes: ";
-    for (int i = 0; i < 64; i++)
-        cout << ((R0_XOR_K1 & 1UL << (63 - i)) != 0);
+    // // L1 = R0
+    // // R1 = L0 + f(R0, K1)
+    // // So, let's perform f
 
-    // Now S-boxes!
-    // Let's try S-value selectors (6-bits each)
-    int after_SBox_1 = do_SBox(R0_XOR_K1);
-    // Show result
-    cout << "\nAfter SBox: ";
-    for (int i = 0; i < 32; i++)
-        cout << ((after_SBox_1 & 1UL << (31 - i)) != 0);
+    // // Do expansion perm to get E(R0)
+    // u64 E_R0 = do_expansion_permutation(R0);
+    // // Show result
+    // cout << "\nE(R0):  ";
+    // for (int i = 0; i < 64; i++)
+    //     cout << ((E_R0 & 1UL << (63 - i)) != 0);
+    // cout << endl;
 
-    // Moving on after S-Boxes...
-    // Normal 32-to-32 permutation...
-    int F_R0_K1 = do_simple_permutation(after_SBox_1);
-    // Show result
-    cout << "\nFinally, F(R0, K1) = ";
-    for (int i = 0; i < 32; i++)
-        cout << ((F_R0_K1 & 1UL << (31 - i)) != 0);
+    // // Get E(R0) XOR K1
+    // u64 K1 = 0x1B02EFFC7072;
+    // u64 R0_XOR_K1 = E_R0 ^ K1;
+    // // Show result
+    // cout << "input to SBoxes: ";
+    // for (int i = 0; i < 64; i++)
+    //     cout << ((R0_XOR_K1 & 1UL << (63 - i)) != 0);
 
-    // R1 = L0 + f(R0, K1)
-    uint R1 = (L0 + F_R0_K1);
-    // Show result
-    cout << "\nR1 = ";
-    for (int i = 0; i < 32; i++)
-        cout << ((R1 & 1 << (31 - i)) != 0);
+    // // Now S-boxes!
+    // // Let's try S-value selectors (6-bits each)
+    // int after_SBox_1 = do_SBox(R0_XOR_K1);
+    // // Show result
+    // cout << "\nAfter SBox: ";
+    // for (int i = 0; i < 32; i++)
+    //     cout << ((after_SBox_1 & 1UL << (31 - i)) != 0);
+
+    // // Moving on after S-Boxes...
+    // // Normal 32-to-32 permutation...
+    // int F_R0_K1 = do_simple_permutation(after_SBox_1);
+    // // Show result
+    // cout << "\nFinally, F(R0, K1) = ";
+    // for (int i = 0; i < 32; i++)
+    //     cout << ((F_R0_K1 & 1UL << (31 - i)) != 0);
+
+    // // R1 = L0 + f(R0, K1)
+    // uint R1 = (L0 + F_R0_K1);
+    // // Show result
+    // cout << "\nR1 = ";
+    // for (int i = 0; i < 32; i++)
+    //     cout << ((R1 & 1 << (31 - i)) != 0);
+    // ############# STEP BY STEP @@@@@@@@@@@@@@@@@@@@@@@
 
     return 0;
 }

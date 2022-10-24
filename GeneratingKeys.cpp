@@ -21,7 +21,7 @@ int PC2_Table[48] =
      44, 49, 39, 56, 34, 53,
      46, 42, 50, 36, 29, 32};
 
-int shifts[16] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
+int shifts[] = {1, 2, 4, 6, 8, 10, 12, 14, 15, 17, 19, 21, 23, 25, 27, 28};
 
 u64 Key_PC1(u64 fullKey)
 {
@@ -50,61 +50,39 @@ u64 Key_PC2(u64 CnDn)
     return newKey;
 }
 
-int main()
+u64 get_Subkey(u64 inputKey, int round_no)
 {
-    u64 example_key = 0x133457799BBCDFF1;
-    // this loop prints out the result in binary
-    cout << "Full key:\n";
-    for (int i = 0; i < 64; i++)
-        cout << ((example_key & 1UL << (63 - i)) != 0);
-
-    cout << endl;
-    u64 result = Key_PC1(example_key);
-    cout << "Key PC1 result:\n";
-    for (int i = 0; i < 64; i++)
-        cout << ((result & 1UL << (63 - i)) != 0);
-
-    cout << endl;
-    cout << "Key PC1 result should be: \n0000000011110000110011001010101011110101010101100110011110001111" << endl;
-
+    u64 Kn = 0;
+    u64 K_after_PC1 = Key_PC1(inputKey);
     // Get C0 and D0
     unsigned int C0 = 0;
     unsigned int D0 = 0;
-
-    C0 = int((result & 0x00FFFFFFF0000000LL) >> 28);
-    D0 = int((result & 0x000000000FFFFFFFLL));
-
-    // Checking...
-    cout << "C0: \n";
-    for (int i = 0; i < 28; i++)
-        cout << ((C0 & 1UL << (27 - i)) != 0);
-
-    cout << "\nD0: \n";
-    for (int i = 0; i < 28; i++)
-        cout << ((D0 & 1UL << (27 - i)) != 0);
-    cout << endl;
-
-    // SINGLE FOR LOOP TO GIVE 16 SUBKEYS!! //
-    u64 subkey_before_PC2 = 0;
+    C0 = int((K_after_PC1 & 0x00FFFFFFF0000000LL) >> 28);
+    D0 = int((K_after_PC1 & 0x000000000FFFFFFFLL));
     int Cn = 0;
     int Dn = 0;
-    u64 Kn = 0;
+    Cn = left_shift(C0, shifts[round_no]);
+    Dn = left_shift(D0, shifts[round_no]);
+    // Get CnDn
+    u64 subkey_before_PC2 = ((u64)Cn) << 28 | Dn;
+    // Get Kn
+    Kn = Key_PC2(subkey_before_PC2);
+    return Kn;
+}
+
+int main()
+{
+    u64 ex_key = 0x133457799BBCDFF1;
+    u64 subkeys_arr[16];
+
     for (int i = 0; i < 16; i++)
     {
-        // Get Cn and Dn
-        Cn = left_shift(C0, shifts[i]);
-        Dn = left_shift(D0, shifts[i]);
-        // Get CnDn
-        subkey_before_PC2 = ((u64)Cn) << 28 | Dn;
-        // Get Kn
-        Kn = Key_PC2(subkey_before_PC2);
-
+        subkeys_arr[i] = get_Subkey(ex_key, i);
         // Show results
-        cout << "K" << (i + 1) << ": ";
-        for (int i = 0; i < 48; i++)
-            cout << ((Kn & 1UL << (47 - i)) != 0);
+        cout << "K" << (i + 1) << " = ";
+        for (int j = 0; j < 48; j++)
+            cout << ((subkeys_arr[i] & 1ULL << (47 - j)) != 0);
         cout << endl;
     }
-
     return 0;
 }
